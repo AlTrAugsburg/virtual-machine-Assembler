@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>VMA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bulma.css">
+    <style media="screen">
+      .activeMenu{
+        color: blue !important;
+        background: #EBEFF4 !important;
+      }
+    </style>
+  </head>
+  <body style="overflow-x: hidden;">
+
+    <script type="text/javascript">
+      function openGithub() {
+        require("electron").shell.openExternal("https://github.com/AlTrAugsburg/virtual-machine-Assembler");
+      }
+      function openG() {
+        require("electron").shell.openExternal("https://github.com/AlTrAugsburg");
+      }
+    </script>
+
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <div class="navbar-item">
+          <img src="assets/logon.png" width="112" height="28">
+        </div>
+
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item is-active activeMenu">
+            Virtual Machine
+          </a>
+
+          <a class="navbar-item">
+            Documentation
+          </a>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              More
+            </a>
+
+            <div class="navbar-dropdown">
+              <a class="navbar-item" onclick="about()">
+                About
+              </a>
+              <a class="navbar-item">
+                Contact
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item" onclick="openGithub()" target="_blank">
+                Report an issue
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+
+    <div style="height: 94vh; width: 100vw;">
+      <div class="columns">
+
+        <div class="column is-4" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+          <h1 class="title is-4" style="font-weight: bold;">Executing code</h1>
+          <div class="control">
+            <textarea class="textarea has-fixed-size" style="border: none !important; height: 79vh; background: #fce74e;"></textarea>
+          </div>
+        </div>
+
+        <div class="column is-7" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+          <h1 class="title is-4" style="font-weight: bold;">Register</h1>
+          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" style="width:100%">
+           <tr>
+             <th>R1</th>
+             <th>R2</th>
+             <th>R3</th>
+             <th>R4</th>
+             <th>R5</th>
+             <th>R6</th>
+             <th>R7</th>
+           </tr>
+           <tr>
+             <td id="r1">00000000</td>
+             <td id="r2">00000000</td>
+             <td id="r3">00000000</td>
+             <td id="r4">00000000</td>
+             <td id="r5">00000000</td>
+             <td id="r6">00000000</td>
+             <td id="r7">00000000</td>
+           </tr>
+           <tr>
+             <th>R8</th>
+             <th>R9</th>
+             <th>R10</th>
+             <th>R11</th>
+             <th>R12</th>
+             <th>R13</th>
+             <th>R14</th>
+           </tr>
+           <tr>
+             <td id="r8">00000000</td>
+             <td id="r9">00000000</td>
+             <td id="r10">00000000</td>
+             <td id="r11">00000000</td>
+             <td id="r12">00000000</td>
+             <td id="r13">00000000</td>
+             <td id="r14">00000000</td>
+           </tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="about" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img src="https://avatars3.githubusercontent.com/u/34038755?s=88&v=4" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
+                  <br>
+                  I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" onclick="aboutc()"></button>
+    </div>
+
+    <script type="text/javascript">
+      function about() {
+        document.getElementById("about").classList.add("is-active");
+      }
+      function aboutc() {
+        document.getElementById("about").classList.remove("is-active");
+      }
+    </script>
+
+  </body>
+</html>
