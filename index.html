@@ -21,6 +21,106 @@
       function openG() {
         require("electron").shell.openExternal("https://github.com/AlTrAugsburg");
       }
+      function openE() {
+        require("electron").shell.openExternal("https://bulma.io");
+      }
+      function openB() {
+        require("electron").shell.openExternal("https://electronjs.org");
+      }
+      function saveL() {
+        var app = require('electron').remote;
+        var dialog = app.dialog;
+        var fs = require('fs');
+        let content = document.getElementById("log").value;
+
+        // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+        dialog.showSaveDialog(null, {
+          filters: [
+            { name: 'Text', extensions: ['txt'] }
+          ]
+        }, (fileName) => {
+            if (fileName === undefined){
+                console.log("You didn't save the file");
+                return;
+            }
+
+            // fileName is a string that contains the path and filename created in the save file dialog.
+            fs.writeFile(fileName, content, (err) => {
+                if(err){
+                    alert("An error ocurred creating the file "+ err.message)
+                }
+
+                alert("The file has been succesfully saved");
+            });
+        });
+      }
+      function saveA() {
+        var app = require('electron').remote;
+        var dialog = app.dialog;
+        var fs = require('fs');
+        let content = document.getElementById("code").value;
+
+        // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+        dialog.showSaveDialog(null, {
+          filters: [
+            { name: 'Ladon Assembler Code', extensions: ['lasm'] }
+          ]
+        }, (fileName) => {
+            if (fileName === undefined){
+                console.log("You didn't save the file");
+                return;
+            }
+
+            // fileName is a string that contains the path and filename created in the save file dialog.
+            fs.writeFile(fileName, content, (err) => {
+                if(err){
+                    alert("An error ocurred creating the file "+ err.message)
+                }
+
+                alert("The file has been succesfully saved");
+            });
+        });
+      }
+      function openA() {
+        var app = require('electron').remote;
+        var dialog1 = app.dialog;
+        var fs = require('fs');
+
+        dialog1.showOpenDialog(null, {
+          filters: [
+            { name: 'Ladon Assembler Code', extensions: ['lasm'] }
+          ]
+          },(fileNames) => {
+            // fileNames is an array that contains all the selected
+            if(fileNames === undefined){
+                console.log("No file selected");
+                return;
+            }
+
+            var fileName = fileNames[0];
+
+            fs.readFile(fileName, 'utf-8', (err, data) => {
+                if(err){
+                    alert("An error ocurred reading the file :" + err.message);
+                    return;
+                }
+
+                // Change how to handle the file content
+                document.getElementById("code").value = data;
+            });
+        });
+
+
+        // Note that the previous example will handle only 1 file, if you want that the dialog accepts multiple files, then change the settings:
+        // And obviously , loop through the fileNames and read every file manually
+        dialog.showOpenDialog({
+            properties: [
+                'openFile', 'multiSelections', (fileNames) => {
+                    console.log(fileNames);
+                }
+            ]
+        });
+      }
     </script>
 
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -73,15 +173,23 @@
       <div class="columns">
 
         <div class="column is-4" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
-          <h1 class="title is-4" style="font-weight: bold;">Executing code</h1>
+          <div class="title is-4" style="font-weight: bold;">
+            Code to execute<br>
+            <div>
+              <button class="button" name="button" style="margin: 10px 2px 2px 2px;">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
+            </div>
+          </div>
           <div class="control">
-            <textarea class="textarea has-fixed-size" style="border: none !important; height: 79vh; background: #fce74e;"></textarea>
+            <textarea id="code" class="textarea has-fixed-size" style="border: none !important; height: 70vh; background: #fce74e;"></textarea>
           </div>
         </div>
 
         <div class="column is-7" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
-          <h1 class="title is-4" style="font-weight: bold;">Register</h1>
-          <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth" style="width:100%">
+          <div class="title is-4" style="font-weight: bold;">
+            Register <button class="button" name="button" style="float: right;" onclick="resetR()">Reset Register</button>
+          </div>
+
+          <table class="table is-bordered is-narrow is-fullwidth" style="width:100%">
            <tr>
              <th>R1</th>
              <th>R2</th>
@@ -92,9 +200,9 @@
              <th>R7</th>
            </tr>
            <tr>
-             <td id="r1">00000000</td>
-             <td id="r2">00000000</td>
-             <td id="r3">00000000</td>
+             <td id="r1">01000001</td>
+             <td id="r2">00000101</td>
+             <td id="r3">00000010</td>
              <td id="r4">00000000</td>
              <td id="r5">00000000</td>
              <td id="r6">00000000</td>
@@ -119,6 +227,18 @@
              <td id="r14">00000000</td>
            </tr>
           </table>
+
+          <div class="title is-4" style="font-weight: bold;">
+            Log
+            <div style="float: right;">
+              <button class="button" name="button" style="margin-right: 15px;" onclick="saveL()">Save Log</button><button class="button" name="button" style="margin-right: 15px;" onclick="resetL()">Clear Log</button><button class="button" name="button" style="margin-right: 15px;">Pause</button><button class="button" name="button">Stop</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <textarea class="textarea has-fixed-size" style="width: 100%; height: 40vh;" id="log" readonly>Step 1: DLOAD 65;&#13;&#10;R0 = 65;&#13;&#10;Step 2: STORE 1;&#13;&#10;R0 = 65;&#13;&#10;Step 3: DLOAD 5;&#13;&#10;R0 = 5;&#13;&#10;Step4: STORE 2;&#13;&#10;R0 = 5;&#13;&#10;Step 5: DLOAD 2;&#13;&#10;R0 = 2;&#13;&#10;Step 6: STORE 3;&#13;&#10;R0 = 2;&#13;&#10;Step 7: LOAD 1;&#13;&#10;R0 = 65;&#13;&#10;Step 8: MULT 3;&#13;&#10;R0 = 130;&#13;&#10;Step 9: DIV 2;&#13;&#10;R0 = 26;&#13;&#10;Step 10: END;&#13;&#10;Ende des Codes erreicht. R0 = 26</textarea>
+          </div>
+
         </div>
 
       </div>
@@ -140,6 +260,7 @@
                   <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
                   <br>
                   I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
+                  <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>
                 </p>
               </div>
             </div>
@@ -156,7 +277,28 @@
       function aboutc() {
         document.getElementById("about").classList.remove("is-active");
       }
+      function resetR() {
+        document.getElementById("r1").innerHTML = "00000000";
+        document.getElementById("r2").innerHTML = "00000000";
+        document.getElementById("r3").innerHTML = "00000000";
+        document.getElementById("r4").innerHTML = "00000000";
+        document.getElementById("r5").innerHTML = "00000000";
+        document.getElementById("r6").innerHTML = "00000000";
+        document.getElementById("r7").innerHTML = "00000000";
+        document.getElementById("r8").innerHTML = "00000000";
+        document.getElementById("r9").innerHTML = "00000000";
+        document.getElementById("r10").innerHTML = "00000000";
+        document.getElementById("r11").innerHTML = "00000000";
+        document.getElementById("r12").innerHTML = "00000000";
+        document.getElementById("r13").innerHTML = "00000000";
+        document.getElementById("r14").innerHTML = "00000000";
+      }
+      function resetL() {
+        document.getElementById("log").innerHTML = "Cleared log.&#13;&#10;"
+      }
+
     </script>
 
   </body>
 </html>
+
