@@ -6,10 +6,10 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 ## What can you do? (Soon)
 
-⋅⋅⋅Read .lasm files
-⋅⋅⋅Save code as .lasm file
-⋅⋅⋅Save log
-⋅⋅⋅Execute code
-⋅⋅⋅Clear register
+*Read .lasm files
+*Save code as .lasm file
+*Save log
+*Execute code
+*Clear register
 
 **Author: Albert Traut**
