@@ -133,7 +133,353 @@ function runCode(){
 
         document.getElementById("log").value = "Command " + (bz+1) + ": DLOAD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
         break;
+
+      case "STORE":
+        //Operation lautet den Wert in R0 in Rx zu speichern
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) > 14){
+          //Der Wert von x ist größer als 14 -> Register exestiert nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine only has 14 register. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        document.getElementById("r"+befehl[1]).innerHTML = ("00000000"+r0.toString(2)).substr(-8);
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": STORE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
+        break;
+
+      case "ADD":
+        //Operation lautet den Wert in Rx zu R0 zu addieren
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) > 14){
+          //Der Wert von x ist größer als 14 -> Register exestiert nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine only has 14 register. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        r0 = r0 + parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2);
+
+        if(r0 > 255){
+          //Wert in R0 ist größer 255 -> Stack Overflow
+
+          document.getElementById("log").value = "Stack Overflow at line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": ADD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
+        break;
+
+      case "SUB":
+        //Operation lautet den Wert in Rx von R0 zu subtrahieren
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) > 14){
+          //Der Wert von x ist größer als 14 -> Register exestiert nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine only has 14 register. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        r0 = r0 - parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2);
+
+        if(r0 < 0){
+          //Wert in R0 ist größer 255 -> Stack Overflow
+
+          document.getElementById("log").value = "In line " + (bz+1) + " you get a negative number. This machine doesn't support negative numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": SUB " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
+        break;
+
+      case "MULT":
+        //Operation lautet den Wert in Rx mit dem Wert in R0 zu multiplizieren
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) > 14){
+          //Der Wert von x ist größer als 14 -> Register exestiert nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine only has 14 register. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        r0 = r0 * parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2);
+
+        if(r0 > 255){
+          //Wert in R0 ist größer 255 -> Stack Overflow
+
+          document.getElementById("log").value = "Stack Overflow at line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": MULT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
+        break;
+
+      case "DIV":
+        //Operation lautet den Wert in R0 durch den Wert in Rx zu dividieren
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) > 14){
+          //Der Wert von x ist größer als 14 -> Register exestiert nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine only has 14 register. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(document.getElementById("r" + befehl[1]).innerHTML == "00000000"){
+          //Wert in Rx ist gleich 0 -> Durch 0 kann nicht geteilt werden -> Error
+
+          document.getElementById("log").value = "Math Error at line " + (bz+1) + ". You can't divide a number by 0. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        r0 = Math.floor(r0/parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2));
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": DIV " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+
+        //Den Wert des Befehlszählers um 1 erhöhen
+
+        bz = bz + 1;
+
+        break;
+
+      case "JUMP":
+        //Operation lautet zum n-ten Befehl zu springen -> Befehlszähler auf n setzen
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        bz = parseInt(befehl[1])-1;
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JUMP " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+
+        break;
+
+      case "JGE":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert in R0 größer oder gleich 0 sein
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(r0 >= 0){
+
+          bz = parseInt(befehl[1])-1;
+
+        }
+
+        else {
+
+          bz = bz + 1;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JGE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        break;
+
+        case "JGT":
+          //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert in R0 größer als 0 sein
+
+          if(isNaN(befehl[1])){
+            //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+            return;
+
+          }
+
+          if(parseInt(befehl[1]) < 1){
+            //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            return;
+
+          }
+
+          if(r0 > 0){
+
+            bz = parseInt(befehl[1])-1;
+
+          }
+
+          else {
+
+            bz = bz + 1;
+
+          }
+
+          document.getElementById("log").value = "Command " + (bz+1) + ": JGE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+          break;
 
       default:
         //Befehl exestiert nicht -> Syntaxfehler
