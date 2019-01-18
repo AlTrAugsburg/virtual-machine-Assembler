@@ -444,47 +444,216 @@ function runCode(){
 
         break;
 
-        case "JGT":
-          //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert in R0 größer als 0 sein
+      case "JGT":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert in R0 größer als 0 sein
 
-          if(isNaN(befehl[1])){
-            //Der Wert von x ist keine Zahl -> Syntaxfehler
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
 
-            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
 
-            return;
+          return;
 
-          }
+        }
 
-          if(parseInt(befehl[1]) < 1){
-            //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
 
-            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
 
-            return;
+          return;
 
-          }
+        }
 
-          if(r0 > 0){
+        if(r0 > 0){
 
-            bz = parseInt(befehl[1])-1;
+          bz = parseInt(befehl[1])-1;
 
-          }
+        }
 
-          else {
+        else {
 
-            bz = bz + 1;
+          bz = bz + 1;
 
-          }
+        }
 
-          document.getElementById("log").value = "Command " + (bz+1) + ": JGE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+        document.getElementById("log").value = "Command " + (bz+1) + ": JGT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
-          break;
+        break;
+
+      case "JLE":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert von r0 kleiner oder gleich null sein
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(r0 <= 0){
+
+          bz = parseInt(befehl[1])-1;
+
+        }
+
+        else {
+
+          bz = bz + 1;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JLE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        break;
+
+      case "JLT":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert von r0 kleiner oder gleich null sein
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(r0 < 0){
+
+          bz = parseInt(befehl[1])-1;
+
+        }
+
+        else {
+
+          bz = bz + 1;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JLT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        break;
+
+      case "JEQ":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert von r0 kleiner oder gleich null sein
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(r0 == 0){
+
+          bz = parseInt(befehl[1])-1;
+
+        }
+
+        else {
+
+          bz = bz + 1;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JEQ " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        break;
+
+      case "JNE":
+        //Die Operation lautet zum n-ten Befehl zu springen, sollte der Wert von r0 kleiner oder gleich null sein
+
+        if(isNaN(befehl[1])){
+          //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(parseInt(befehl[1]) < 1){
+          //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        if(r0 != 0){
+
+          bz = parseInt(befehl[1])-1;
+
+        }
+
+        else {
+
+          bz = bz + 1;
+
+        }
+
+        document.getElementById("log").value = "Command " + (bz+1) + ": JNE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        break;
+
+      case "END":
+        //Die Operation lautet die Code Ausführung zu beenden
+
+        if(befehl.length==1){
+
+          end = true;
+
+          document.getElementById("log").value = "Command " + (bz+1) + ": END;\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+        }
+
+        else {
+
+          document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The operation END has no input parameters. Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+
+        }
+
+        break;
 
       default:
         //Befehl exestiert nicht -> Syntaxfehler
 
-        document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+        document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". The operation doesn't exist. Code execution ended.\n" + document.getElementById("log").value;
 
         return;
 
@@ -495,3 +664,4 @@ function runCode(){
   }
 
 }
+
