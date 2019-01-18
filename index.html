@@ -10,9 +10,23 @@
         color: blue !important;
         background: #EBEFF4 !important;
       }
+      .codearea {
+        background-image: url(http://i.imgur.com/2cOaJ.png);
+        background-attachment: local;
+        background-repeat: no-repeat;
+        background-color: #fce74e;
+        padding-left: 35px;
+        padding-top: 12px;
+        border-color:#ccc;
+        font-size: 11px;
+        font-family: 'Source Code Pro', monospace;
+      }
     </style>
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
   </head>
   <body style="overflow-x: hidden;">
+
+     <script src="runCode.js"></script>
 
     <script type="text/javascript">
       function openGithub() {
@@ -20,6 +34,9 @@
       }
       function openG() {
         require("electron").shell.openExternal("https://github.com/AlTrAugsburg");
+      }
+      function openF() {
+        require("electron").shell.openExternal("https://fonts.google.com/specimen/Source+Code+Pro");
       }
       function openE() {
         require("electron").shell.openExternal("https://bulma.io");
@@ -109,17 +126,6 @@
                 document.getElementById("code").value = data;
             });
         });
-
-
-        // Note that the previous example will handle only 1 file, if you want that the dialog accepts multiple files, then change the settings:
-        // And obviously , loop through the fileNames and read every file manually
-        dialog.showOpenDialog({
-            properties: [
-                'openFile', 'multiSelections', (fileNames) => {
-                    console.log(fileNames);
-                }
-            ]
-        });
       }
     </script>
 
@@ -172,19 +178,19 @@
     <div style="height: 94vh; width: 100vw;">
       <div class="columns">
 
-        <div class="column is-4" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+        <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
           <div class="title is-4" style="font-weight: bold;">
             Code to execute<br>
             <div>
-              <button class="button" name="button" style="margin: 10px 2px 2px 2px;">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
+              <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode()">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
             </div>
           </div>
           <div class="control">
-            <textarea id="code" class="textarea has-fixed-size" style="border: none !important; height: 70vh; background: #fce74e;"></textarea>
+            <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 70vh;"></textarea>
           </div>
         </div>
 
-        <div class="column is-7" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+        <div class="column is-8" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
           <div class="title is-4" style="font-weight: bold;">
             Register <button class="button" name="button" style="float: right;" onclick="resetR()">Reset Register</button>
           </div>
@@ -236,7 +242,7 @@
           </div>
 
           <div class="control">
-            <textarea class="textarea has-fixed-size" style="width: 100%; height: 40vh;" id="log" readonly>Step 1: DLOAD 65;&#13;&#10;R0 = 65;&#13;&#10;Step 2: STORE 1;&#13;&#10;R0 = 65;&#13;&#10;Step 3: DLOAD 5;&#13;&#10;R0 = 5;&#13;&#10;Step4: STORE 2;&#13;&#10;R0 = 5;&#13;&#10;Step 5: DLOAD 2;&#13;&#10;R0 = 2;&#13;&#10;Step 6: STORE 3;&#13;&#10;R0 = 2;&#13;&#10;Step 7: LOAD 1;&#13;&#10;R0 = 65;&#13;&#10;Step 8: MULT 3;&#13;&#10;R0 = 130;&#13;&#10;Step 9: DIV 2;&#13;&#10;R0 = 26;&#13;&#10;Step 10: END;&#13;&#10;Ende des Codes erreicht. R0 = 26</textarea>
+            <textarea class="textarea has-fixed-size" style="width: 100%; height: 40vh;" id="log" readonly></textarea>
           </div>
 
         </div>
@@ -260,7 +266,7 @@
                   <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
                   <br>
                   I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
-                  <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>
+                  <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>; <a onclick="openF()">Source Code Pro(Font of the code textarea)</a>
                 </p>
               </div>
             </div>
@@ -294,11 +300,10 @@
         document.getElementById("r14").innerHTML = "00000000";
       }
       function resetL() {
-        document.getElementById("log").innerHTML = "Cleared log.&#13;&#10;"
+        document.getElementById("log").value = "";
       }
 
     </script>
 
   </body>
 </html>
-
