@@ -40,11 +40,21 @@ function runCode(){
 
     //&#13;&#10; == new line in textarea
 
+    state = "run";
+
     //Startet die Funktion, welche die Funktion ausführt in 1 Sekunde, damit "Notfalls" der Code gestoppt bzw. pausiert werden kann
-    setTimeout(execute, 1000);
+    ex = setTimeout(execute, 1000);
 
   }
 
+  else {
+
+    var app = require('electron').remote;
+    var dialog = app.dialog;
+
+    dialog.showErrorBox("Code is executing", "The code is already executing or it's paused. You have to stop it, if you want to run code.");
+
+  }
 
 }
 
@@ -760,7 +770,92 @@ function runCode(){
 
       }
 
-      setTimeout(execute, 1000);
+      ex = setTimeout(execute, 1000);
+
+    }
+
+    else {
+      //Entweder kein Code mehr da, oder END wurde benutzt
+
+      if(end){
+
+        document.getElementById("log").value = "Code execution ended.\n" + document.getElementById("log").value;
+
+        state = "stop";
+
+      }
+
+      else {
+        //Kein Code mehr zum ausführen ->Syntaxfehler, der Code muss mit END beendet werden
+
+        document.getElementById("log").value = "Syntax Error. There's no END operation. Code execution ended.\n" + document.getElementById("log").value;
+
+        state = "stop";
+
+      }
+
+
+    }
+
+  }
+
+  function pauseContinueCode() {
+    //Code execution pausieren bzw. fortsetzen
+
+    //Schauen ob Code läuft
+    if(state == "run"){
+
+      clearTimeout(ex);
+
+      state = "pause";
+
+      document.getElementById("pause").innerHTML = "Continue";
+
+      document.getElementById("log").value = "Code execution paused.\n" + document.getElementById("log").value;
+
+    }
+
+    else {
+
+      //Schauen ob Execution pausiert
+      if(state == "pause"){
+
+        state = "run";
+
+        document.getElementById("pause").innerHTML = "Pause";
+
+        ex = setTimeout(execute, 1000);
+
+        document.getElementById("log").value = "Code execution continues.\n" + document.getElementById("log").value;
+
+
+      }
+
+    }
+
+  }
+
+  function stopCode() {
+
+    if(state == "run"){
+
+      state = "stop";
+
+      clearTimeout(ex);
+
+      document.getElementById("log").value = "Code execution stopped.\n" + document.getElementById("log").value;
+
+    }
+
+    if (state == "pause") {
+
+      state = "stop";
+
+      clearTimeout(ex);
+
+      document.getElementById("log").value = "Code execution stopped.\n" + document.getElementById("log").value;
+
+      document.getElementById("pause").innerHTML = "Pause";
 
     }
 
