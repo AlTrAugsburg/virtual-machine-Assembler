@@ -148,7 +148,7 @@
             Virtual Machine
           </a>
 
-          <a class="navbar-item">
+          <a class="navbar-item" onclick="docs()">
             Documentation
           </a>
 
@@ -161,7 +161,7 @@
               <a class="navbar-item" onclick="about()">
                 About
               </a>
-              <a class="navbar-item">
+              <a class="navbar-item" href="mailto:vma@ladon.xyz">
                 Contact
               </a>
               <hr class="navbar-divider">
@@ -237,7 +237,7 @@
           <div class="title is-4" style="font-weight: bold;">
             Log
             <div style="float: right;">
-              <button class="button" name="button" style="margin-right: 15px;" onclick="saveL()">Save Log</button><button class="button" name="button" style="margin-right: 15px;" onclick="resetL()">Clear Log</button><button class="button" name="button" style="margin-right: 15px;">Pause</button><button class="button" name="button">Stop</button>
+              <button class="button" name="button" style="margin-right: 15px;" onclick="saveL()">Save Log</button><button class="button" name="button" style="margin-right: 15px;" onclick="resetL()">Clear Log</button><button id="pause" onclick="pauseContinueCode()" class="button" name="button" style="margin-right: 15px;">Pause</button><button class="button" name="button" onclick="stopCode()">Stop</button>
             </div>
           </div>
 
@@ -276,12 +276,68 @@
       <button class="modal-close is-large" aria-label="close" onclick="aboutc()"></button>
     </div>
 
+    <div id="documentation" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div class="content">
+            Befehle im Ladon Assembler Code (.lasm)<br>
+            <br>
+            LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
+            DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
+            STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
+            ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
+            SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
+            MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
+            DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
+            JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
+            JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
+            JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
+            JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
+            JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
+            JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
+            JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
+            END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
+            <br>
+            <br>
+            Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
+            sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
+            ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
+            Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
+            <br>
+            Nach dem Strichpunkt, welcher am Ende jedes Befehls steht kann noch ein Kommentar stehen. <br>
+            <br>
+            Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
+            <br>
+            Negative Wert sowie Werte über 255 werden nicht unterstützt. <br>
+            <br>
+            Das teilen durch 0 wird nicht unterstützt. <br>
+            <br>
+            Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
+            des Codes unterbrochen.<br>
+            <br>
+            Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
+            als .lasm-Datei gespeichert wird.<br>
+            <br>
+            Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+          </div>
+        </div>
+      </div>
+      <button class="modal-close is-large" aria-label="close" onclick="docsc()"></button>
+    </div>
+
     <script type="text/javascript">
       function about() {
         document.getElementById("about").classList.add("is-active");
       }
       function aboutc() {
         document.getElementById("about").classList.remove("is-active");
+      }
+      function docs() {
+        document.getElementById("documentation").classList.add("is-active");
+      }
+      function docsc() {
+        document.getElementById("documentation").classList.remove("is-active");
       }
       function resetR() {
         document.getElementById("r1").innerHTML = "00000000";
