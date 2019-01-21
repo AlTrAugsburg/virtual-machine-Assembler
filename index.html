@@ -21,6 +21,9 @@
         font-size: 11px;
         font-family: 'Source Code Pro', monospace;
       }
+      .dezi{
+        text-align: center;
+      }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
   </head>
@@ -197,6 +200,7 @@
 
           <table class="table is-bordered is-narrow is-fullwidth" style="width:100%">
            <tr>
+             <th>R0</th>
              <th>R1</th>
              <th>R2</th>
              <th>R3</th>
@@ -204,8 +208,10 @@
              <th>R5</th>
              <th>R6</th>
              <th>R7</th>
+             <th>R8</th>
            </tr>
            <tr>
+             <td id="r0">00000000</td>
              <td id="r1">00000000</td>
              <td id="r2">00000000</td>
              <td id="r3">00000000</td>
@@ -213,24 +219,51 @@
              <td id="r5">00000000</td>
              <td id="r6">00000000</td>
              <td id="r7">00000000</td>
+             <td id="r8">00000000</td>
            </tr>
            <tr>
-             <th>R8</th>
+             <td id="r0d" class="dezi">0</td>
+             <td id="r1d" class="dezi">0</td>
+             <td id="r2d" class="dezi">0</td>
+             <td id="r3d" class="dezi">0</td>
+             <td id="r4d" class="dezi">0</td>
+             <td id="r5d" class="dezi">0</td>
+             <td id="r6d" class="dezi">0</td>
+             <td id="r7d" class="dezi">0</td>
+             <td id="r8d" class="dezi">0</td>
+           </tr>
+           <tr>
              <th>R9</th>
              <th>R10</th>
              <th>R11</th>
              <th>R12</th>
              <th>R13</th>
              <th>R14</th>
+             <th>R15</th>
+             <th>SR1</th>
+             <th>SR2</th>
            </tr>
            <tr>
-             <td id="r8">00000000</td>
              <td id="r9">00000000</td>
              <td id="r10">00000000</td>
              <td id="r11">00000000</td>
              <td id="r12">00000000</td>
              <td id="r13">00000000</td>
              <td id="r14">00000000</td>
+             <td id="r15">00000000</td>
+             <td id="sr1">00000000</td>
+             <td id="sr2">00000000</td>
+           </tr>
+           <tr>
+             <td id="r9d" class="dezi">0</td>
+             <td id="r10d" class="dezi">0</td>
+             <td id="r11d" class="dezi">0</td>
+             <td id="r12d" class="dezi">0</td>
+             <td id="r13d" class="dezi">0</td>
+             <td id="r14d" class="dezi">0</td>
+             <td id="r15d" class="dezi">0</td>
+             <td class="dezi"></td>
+             <td class="dezi"></td>
            </tr>
           </table>
 
@@ -340,6 +373,10 @@
         document.getElementById("documentation").classList.remove("is-active");
       }
       function resetR() {
+        if(state != "stop"){
+          return;
+        }
+        document.getElementById("r0").innerHTML = "00000000";
         document.getElementById("r1").innerHTML = "00000000";
         document.getElementById("r2").innerHTML = "00000000";
         document.getElementById("r3").innerHTML = "00000000";
@@ -354,6 +391,25 @@
         document.getElementById("r12").innerHTML = "00000000";
         document.getElementById("r13").innerHTML = "00000000";
         document.getElementById("r14").innerHTML = "00000000";
+        document.getElementById("r15").innerHTML = "00000000";
+        document.getElementById("sr1").innerHTML = "00000000";
+        document.getElementById("sr2").innerHTML = "00000000";
+        document.getElementById("r0d").innerHTML = "0";
+        document.getElementById("r1d").innerHTML = "0";
+        document.getElementById("r2d").innerHTML = "0";
+        document.getElementById("r3d").innerHTML = "0";
+        document.getElementById("r4d").innerHTML = "0";
+        document.getElementById("r5d").innerHTML = "0";
+        document.getElementById("r6d").innerHTML = "0";
+        document.getElementById("r7d").innerHTML = "0";
+        document.getElementById("r8d").innerHTML = "0";
+        document.getElementById("r9d").innerHTML = "0";
+        document.getElementById("r10d").innerHTML = "0";
+        document.getElementById("r11d").innerHTML = "0";
+        document.getElementById("r12d").innerHTML = "0";
+        document.getElementById("r13d").innerHTML = "0";
+        document.getElementById("r14d").innerHTML = "0";
+        document.getElementById("r15d").innerHTML = "0";
       }
       function resetL() {
         document.getElementById("log").value = "";
