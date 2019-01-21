@@ -332,13 +332,12 @@
             JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
             END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
             <br>
+            Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
             <br>
             Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
             sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
             ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
             Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
-            <br>
-            Nach dem Strichpunkt, welcher am Ende jedes Befehls steht kann noch ein Kommentar stehen. <br>
             <br>
             Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
             <br>
