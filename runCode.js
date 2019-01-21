@@ -117,6 +117,10 @@ function runCode(){
 
             r0 = parseInt(document.getElementById("r" + befehl[1]).innerHTML, 2);
 
+            document.getElementById("r0").innerHTML = document.getElementById("r" + befehl[1]).innerHTML;
+
+            document.getElementById("r0d").innerHTML = r0;
+
             document.getElementById("log").value = "Command " + (bz+1) + ": LOAD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           }
@@ -175,6 +179,10 @@ function runCode(){
 
           r0 = befehl[1];
 
+          document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r0d").innerHTML = r0;
+
           document.getElementById("log").value = "Command " + (bz+1) + ": DLOAD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           //Den Wert des Befehlszählers um 1 erhöhen
@@ -220,6 +228,8 @@ function runCode(){
           }
 
           document.getElementById("r"+befehl[1]).innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r"+befehl[1]+"d").innerHTML = r0;
 
           document.getElementById("log").value = "Command " + (bz+1) + ": STORE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
@@ -277,6 +287,10 @@ function runCode(){
             return;
 
           }
+
+          document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r0d").innerHTML = r0;
 
           document.getElementById("log").value = "Command " + (bz+1) + ": ADD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
@@ -336,6 +350,10 @@ function runCode(){
 
           }
 
+          document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r0d").innerHTML = r0;
+
           document.getElementById("log").value = "Command " + (bz+1) + ": SUB " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
 
@@ -391,6 +409,10 @@ function runCode(){
             return;
 
           }
+
+          document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r0d").innerHTML = r0;
 
           document.getElementById("log").value = "Command " + (bz+1) + ": MULT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
@@ -449,6 +471,10 @@ function runCode(){
           }
 
           r0 = Math.floor(r0/parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2));
+
+          document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+
+          document.getElementById("r0d").innerHTML = r0;
 
           document.getElementById("log").value = "Command " + (bz+1) + ": DIV " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
