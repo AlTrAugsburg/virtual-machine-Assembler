@@ -48,6 +48,11 @@
         require("electron").shell.openExternal("https://electronjs.org");
       }
       function saveL() {
+        if(state != "stop"){
+
+          return;
+
+        }
         var app = require('electron').remote;
         var dialog = app.dialog;
         var fs = require('fs');
@@ -56,7 +61,7 @@
         // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
         dialog.showSaveDialog(null, {
           filters: [
-            { name: 'Text', extensions: ['txt'] }
+            { name: 'Text (*.txt)', extensions: ['txt'] }
           ]
         }, (fileName) => {
             if (fileName === undefined){
@@ -75,6 +80,9 @@
         });
       }
       function saveA() {
+        if(state != "stop"){
+          return;
+        }
         var app = require('electron').remote;
         var dialog = app.dialog;
         var fs = require('fs');
@@ -83,7 +91,7 @@
         // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
         dialog.showSaveDialog(null, {
           filters: [
-            { name: 'Ladon Assembler Code', extensions: ['lasm'] }
+            { name: 'Ladon Assembler Code (*.lasm)', extensions: ['lasm'] }
           ]
         }, (fileName) => {
             if (fileName === undefined){
@@ -102,13 +110,16 @@
         });
       }
       function openA() {
+        if(state != "stop"){
+          return;
+        }
         var app = require('electron').remote;
         var dialog1 = app.dialog;
         var fs = require('fs');
 
         dialog1.showOpenDialog(null, {
           filters: [
-            { name: 'Ladon Assembler Code', extensions: ['lasm'] }
+            { name: 'Ladon Assembler Code (*.lasm)', extensions: ['lasm'] }
           ]
           },(fileNames) => {
             // fileNames is an array that contains all the selected
@@ -240,8 +251,8 @@
              <th>R13</th>
              <th>R14</th>
              <th>R15</th>
-             <th>SR1</th>
-             <th>SR2</th>
+             <th>SR</th>
+             <th>BZ</th>
            </tr>
            <tr>
              <td id="r9">00000000</td>
@@ -251,8 +262,8 @@
              <td id="r13">00000000</td>
              <td id="r14">00000000</td>
              <td id="r15">00000000</td>
-             <td id="sr1">00000000</td>
-             <td id="sr2">00000000</td>
+             <td id="sr">00000000</td>
+             <td id="bz">00000000</td>
            </tr>
            <tr>
              <td id="r9d" class="dezi">0</td>
@@ -263,7 +274,7 @@
              <td id="r14d" class="dezi">0</td>
              <td id="r15d" class="dezi">0</td>
              <td class="dezi"></td>
-             <td class="dezi"></td>
+             <td id="bzd" class="dezi">0</td>
            </tr>
           </table>
 
@@ -351,6 +362,20 @@
             Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
             als .lasm-Datei gespeichert wird.<br>
             <br>
+            Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
+            <br>
+            - 00000000 steht für eine psoitve Zahl zwischen 1 und 255 <br>
+            - 10000000 steht für eine Zahl größer als 255 (Overflow) <br>
+            - 00000001 steht für eine negative Zahl <br>
+            - 10000001 steht für den Wert 0 <br>
+            <br>
+            Sollte in R0 eine negative Zahl bzw. eine Zahl größer 255 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+            und R0 wird der Wert 0 zugewiesen.<br>
+            <br>
+            Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
+            zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
+            beschrieben.<br>
+            <br>
             Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
           </div>
         </div>
@@ -411,7 +436,11 @@
         document.getElementById("r15d").innerHTML = "0";
       }
       function resetL() {
-        document.getElementById("log").value = "";
+        if(state == "stop"){
+
+          document.getElementById("log").value = "";
+
+        }
       }
 
     </script>
