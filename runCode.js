@@ -18,6 +18,14 @@ var srActive = false;
 //Diese Variable sagt, ob der Code läuft, pausiert bzw. gestoppt/zu Ende ist
 var state = "stop";
 
+//Diese Funktion überprüft ob es sich bei einer Zahl um eine natürliche Zahl handelt
+function isNaturalNumber(n) {
+    n = n.toString(); // force the value incase it is not
+    var n1 = Math.abs(n),
+        n2 = parseInt(n, 10);
+    return !isNaN(n1) && n2 === n1 && n1.toString() === n;
+}
+
 function runCode(){
 
   if(state == "stop"){
@@ -123,7 +131,6 @@ function runCode(){
     */
 
     if(bz<code.length&&!end){
-      console.log(bz);
 
       //Kommentar und Befehl trennen, sollte ein Kommentar vorhanden sein
       var b1 = code[bz].split(";");
@@ -214,6 +221,17 @@ function runCode(){
             //Der Wert von i ist keine Zahl -> Syntaxfehler
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert in i ist keine natürliche Zahl
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Only natural numbers are supported. Code execution ended.\n" + document.getElementById("log").value;
 
             state = "stop";
 
@@ -355,6 +373,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Register only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           document.getElementById("r"+befehl[1]).innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
 
           document.getElementById("r"+befehl[1]+"d").innerHTML = r0;
@@ -408,6 +437,17 @@ function runCode(){
             //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Register only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
 
             state = "stop";
 
@@ -512,6 +552,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Register only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           r0 = r0 - parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2);
 
           if(r0 < 0){
@@ -602,6 +653,17 @@ function runCode(){
             //Der Wert von x ist kleiner 1 -> Auf R0 kann nicht zugegriffen werden und negative Rgisterzahlen gibt es nicht
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". The machine doesn't have negative register and you can't store in R0. Code execution ended.\n" + document.getElementById("log").value;
+
+            return;
+
+          }
+
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Register only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
 
             return;
 
@@ -713,6 +775,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Register only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           r0 = Math.floor(r0/parseInt(document.getElementById("r"+befehl[1]).innerHTML, 2));
 
           if(r0 == 0){
@@ -788,6 +861,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           document.getElementById("log").value = "Command " + (bz+1) + ": JUMP " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           bz = parseInt(befehl[1])-1;
@@ -815,6 +899,17 @@ function runCode(){
             //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
 
             state = "stop";
 
@@ -890,6 +985,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           document.getElementById("log").value = "Command " + (bz+1) + ": JGT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           if(document.getElementById("sr").innerHTML == "00000000" || document.getElementById("sr").innerHTML == "10000000"){
@@ -951,6 +1057,17 @@ function runCode(){
             //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
+          if(!Number(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
 
             state = "stop";
 
@@ -1026,6 +1143,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           document.getElementById("log").value = "Command " + (bz+1) + ": JLT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           if(document.getElementById("sr").innerHTML == "00000001"){
@@ -1094,6 +1222,17 @@ function runCode(){
 
           }
 
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
           document.getElementById("log").value = "Command " + (bz+1) + ": JEQ " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
           if(document.getElementById("sr").innerHTML == "10000001"){
@@ -1155,6 +1294,17 @@ function runCode(){
             //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+            state = "stop";
+
+            return;
+
+          }
+
+          if(!isNaturalNumber(befehl[1])){
+            //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+            document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
 
             state = "stop";
 
