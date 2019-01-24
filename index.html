@@ -5,6 +5,7 @@
     <title>VMA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bulma.css">
+    <link rel="stylesheet" href="css/spinner.css">
     <style media="screen">
       .activeMenu{
         color: blue !important;
@@ -29,7 +30,17 @@
   </head>
   <body style="overflow-x: hidden;">
 
-     <script src="runCode.js"></script>
+    <div id="loading" style="height: 100vh; width: 100vw; z-index: 1; background: #fff; top: 0; left: 0; overflow-x: hidden; padding-top: 35vh;">
+
+      <div class="cssload-loader">
+      	<div class="cssload-inner cssload-one"></div>
+      	<div class="cssload-inner cssload-two"></div>
+      	<div class="cssload-inner cssload-three"></div>
+      </div>
+
+    </div>
+
+     <script src="js/runCode.js"></script>
 
     <script type="text/javascript">
       function openGithub() {
@@ -143,244 +154,346 @@
       }
     </script>
 
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <div class="navbar-item">
-          <img src="assets/logon.png" width="112" height="28">
-        </div>
+    <!--Virtual machine-->
 
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
+    <div id="machine" style="display: none;">
 
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item is-active activeMenu">
-            Virtual Machine
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <div class="navbar-item">
+            <img src="assets/logon.png" width="112" height="28">
+          </div>
+
+          <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
           </a>
-
-          <a class="navbar-item" onclick="docs()">
-            Documentation
-          </a>
-
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              More
-            </a>
-
-            <div class="navbar-dropdown">
-              <a class="navbar-item" onclick="about()">
-                About
-              </a>
-              <a class="navbar-item" href="mailto:vma@ladon.xyz">
-                Contact
-              </a>
-              <hr class="navbar-divider">
-              <a class="navbar-item" onclick="openGithub()" target="_blank">
-                Report an issue
-              </a>
-            </div>
-          </div>
         </div>
 
-      </div>
-    </nav>
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
 
-    <div style="height: 94vh; width: 100vw;">
-      <div class="columns">
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link is-active activeMenu">
+                Virtual Machine
+              </a>
 
-        <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
-          <div class="title is-4" style="font-weight: bold;">
-            Code to execute<br>
-            <div>
-              <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
-            </div>
-          </div>
-          <div class="control">
-            <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 70vh;"></textarea>
-          </div>
-        </div>
-
-        <div class="column is-8" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
-          <div class="title is-4" style="font-weight: bold;">
-            Register <button class="button" name="button" style="float: right;" onclick="resetR()">Reset Register</button>
-          </div>
-
-          <table class="table is-bordered is-narrow is-fullwidth" style="width:100%">
-           <tr>
-             <th>R0</th>
-             <th>R1</th>
-             <th>R2</th>
-             <th>R3</th>
-             <th>R4</th>
-             <th>R5</th>
-             <th>R6</th>
-             <th>R7</th>
-             <th>R8</th>
-           </tr>
-           <tr>
-             <td id="r0">00000000</td>
-             <td id="r1">00000000</td>
-             <td id="r2">00000000</td>
-             <td id="r3">00000000</td>
-             <td id="r4">00000000</td>
-             <td id="r5">00000000</td>
-             <td id="r6">00000000</td>
-             <td id="r7">00000000</td>
-             <td id="r8">00000000</td>
-           </tr>
-           <tr>
-             <td id="r0d" class="dezi">0</td>
-             <td id="r1d" class="dezi">0</td>
-             <td id="r2d" class="dezi">0</td>
-             <td id="r3d" class="dezi">0</td>
-             <td id="r4d" class="dezi">0</td>
-             <td id="r5d" class="dezi">0</td>
-             <td id="r6d" class="dezi">0</td>
-             <td id="r7d" class="dezi">0</td>
-             <td id="r8d" class="dezi">0</td>
-           </tr>
-           <tr>
-             <th>R9</th>
-             <th>R10</th>
-             <th>R11</th>
-             <th>R12</th>
-             <th>R13</th>
-             <th>R14</th>
-             <th>R15</th>
-             <th>SR</th>
-             <th>BZ</th>
-           </tr>
-           <tr>
-             <td id="r9">00000000</td>
-             <td id="r10">00000000</td>
-             <td id="r11">00000000</td>
-             <td id="r12">00000000</td>
-             <td id="r13">00000000</td>
-             <td id="r14">00000000</td>
-             <td id="r15">00000000</td>
-             <td id="sr">00000000</td>
-             <td id="bz">00000000</td>
-           </tr>
-           <tr>
-             <td id="r9d" class="dezi">0</td>
-             <td id="r10d" class="dezi">0</td>
-             <td id="r11d" class="dezi">0</td>
-             <td id="r12d" class="dezi">0</td>
-             <td id="r13d" class="dezi">0</td>
-             <td id="r14d" class="dezi">0</td>
-             <td id="r15d" class="dezi">0</td>
-             <td class="dezi"></td>
-             <td id="bzd" class="dezi">0</td>
-           </tr>
-          </table>
-
-          <div class="title is-4" style="font-weight: bold;">
-            Log
-            <div style="float: right;">
-              <button class="button" name="button" style="margin-right: 15px;" onclick="saveL()">Save Log</button><button class="button" name="button" style="margin-right: 15px;" onclick="resetL()">Clear Log</button><button id="pause" onclick="pauseContinueCode()" class="button" name="button" style="margin-right: 15px;">Pause</button><button class="button" name="button" onclick="stopCode()">Stop</button>
-            </div>
-          </div>
-
-          <div class="control">
-            <textarea class="textarea has-fixed-size" style="width: 100%; height: 40vh;" id="log" readonly></textarea>
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-    <div id="about" class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <div class="box">
-          <article class="media">
-            <div class="media-left">
-              <figure class="image is-64x64">
-                <img src="https://avatars3.githubusercontent.com/u/34038755?s=88&v=4" alt="Image">
-              </figure>
-            </div>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
-                  <br>
-                  I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
-                  <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>; <a onclick="openF()">Source Code Pro(Font of the code textarea)</a>
-                </p>
+              <div class="navbar-dropdown">
+                <a class="navbar-item is-active">
+                  8-bit; natural numbers
+                </a>
+                <a class="navbar-item" href="integer8.html">
+                  8 bit; integers
+                </a>
+                <hr class="navbar-divider">
+                <div class="navbar-item">
+                  Here will be something soon
+                </div>
               </div>
             </div>
-          </article>
+
+
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Documentations
+              </a>
+
+              <div class="navbar-dropdown">
+                <a class="navbar-item" onclick="docsn8()">
+                  8-bit; natural numbers
+                </a>
+                <a class="navbar-item" onclick="docsi8()">
+                  8 bit; integers
+                </a>
+                <hr class="navbar-divider">
+                <div class="navbar-item">
+                  Here will be something soon
+                </div>
+              </div>
+            </div>
+
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                More
+              </a>
+
+              <div class="navbar-dropdown">
+                <a class="navbar-item" onclick="about()">
+                  About
+                </a>
+                <a class="navbar-item" href="mailto:vma@ladon.xyz">
+                  Contact
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item" onclick="openGithub()" target="_blank">
+                  Report an issue
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </nav>
+
+      <div style="height: 94vh; width: 100vw;">
+        <div class="columns">
+
+          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+            <div class="title is-4" style="font-weight: bold;">
+              Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8469;</span></div><br><br>
+              <div>
+                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
+              </div>
+            </div>
+            <div class="control">
+              <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 69vh;"></textarea>
+            </div>
+          </div>
+
+          <div class="column is-8" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+            <div class="title is-4" style="font-weight: bold;">
+              Register <button class="button" name="button" style="float: right;" onclick="resetR()">Reset Register</button>
+            </div>
+
+            <table class="table is-bordered is-narrow is-fullwidth" style="width:100%" id="registert">
+             <tr>
+               <th>R0</th>
+               <th>R1</th>
+               <th>R2</th>
+               <th>R3</th>
+               <th>R4</th>
+               <th>R5</th>
+               <th>R6</th>
+               <th>R7</th>
+               <th>R8</th>
+             </tr>
+             <tr>
+               <td id="r0">00000000</td>
+               <td id="r1">00000000</td>
+               <td id="r2">00000000</td>
+               <td id="r3">00000000</td>
+               <td id="r4">00000000</td>
+               <td id="r5">00000000</td>
+               <td id="r6">00000000</td>
+               <td id="r7">00000000</td>
+               <td id="r8">00000000</td>
+             </tr>
+             <tr>
+               <td id="r0d" class="dezi">0</td>
+               <td id="r1d" class="dezi">0</td>
+               <td id="r2d" class="dezi">0</td>
+               <td id="r3d" class="dezi">0</td>
+               <td id="r4d" class="dezi">0</td>
+               <td id="r5d" class="dezi">0</td>
+               <td id="r6d" class="dezi">0</td>
+               <td id="r7d" class="dezi">0</td>
+               <td id="r8d" class="dezi">0</td>
+             </tr>
+             <tr>
+               <th>R9</th>
+               <th>R10</th>
+               <th>R11</th>
+               <th>R12</th>
+               <th>R13</th>
+               <th>R14</th>
+               <th>R15</th>
+               <th>SR</th>
+               <th>BZ</th>
+             </tr>
+             <tr>
+               <td id="r9">00000000</td>
+               <td id="r10">00000000</td>
+               <td id="r11">00000000</td>
+               <td id="r12">00000000</td>
+               <td id="r13">00000000</td>
+               <td id="r14">00000000</td>
+               <td id="r15">00000000</td>
+               <td id="sr">00000000</td>
+               <td id="bz">00000000</td>
+             </tr>
+             <tr>
+               <td id="r9d" class="dezi">0</td>
+               <td id="r10d" class="dezi">0</td>
+               <td id="r11d" class="dezi">0</td>
+               <td id="r12d" class="dezi">0</td>
+               <td id="r13d" class="dezi">0</td>
+               <td id="r14d" class="dezi">0</td>
+               <td id="r15d" class="dezi">0</td>
+               <td class="dezi"></td>
+               <td id="bzd" class="dezi">0</td>
+             </tr>
+            </table>
+
+            <div class="title is-4" style="font-weight: bold;">
+              Log
+              <div style="float: right;">
+                <button class="button" name="button" style="margin-right: 15px;" onclick="saveL()">Save Log</button><button class="button" name="button" style="margin-right: 15px;" onclick="resetL()">Clear Log</button><button id="pause" onclick="pauseContinueCode()" class="button" name="button" style="margin-right: 15px;">Pause</button><button class="button" name="button" onclick="stopCode()">Stop</button>
+              </div>
+            </div>
+
+            <div class="control">
+              <textarea class="textarea has-fixed-size" style="width: 100%; height: 40vh;" id="log" readonly></textarea>
+            </div>
+
+          </div>
+
         </div>
       </div>
-      <button class="modal-close is-large" aria-label="close" onclick="aboutc()"></button>
-    </div>
 
-    <div id="documentation" class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <div class="box">
-          <div class="content">
-            Befehle im Ladon Assembler Code (.lasm)<br>
-            <br>
-            LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
-            DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
-            STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
-            ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
-            SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
-            MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
-            DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
-            JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
-            JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
-            JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
-            JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
-            JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
-            JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
-            JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
-            END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
-            <br>
-            Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
-            <br>
-            Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
-            sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
-            ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
-            Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
-            <br>
-            Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
-            <br>
-            Negative Wert sowie Werte über 255 werden nicht unterstützt. <br>
-            <br>
-            Das teilen durch 0 wird nicht unterstützt. <br>
-            <br>
-            Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
-            des Codes unterbrochen.<br>
-            <br>
-            Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
-            als .lasm-Datei gespeichert wird.<br>
-            <br>
-            Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
-            <br>
-            - 00000000 steht für eine psoitve Zahl zwischen 1 und 255 <br>
-            - 10000000 steht für eine Zahl größer als 255 (Overflow) <br>
-            - 00000001 steht für eine negative Zahl <br>
-            - 10000001 steht für den Wert 0 <br>
-            <br>
-            Sollte in R0 eine negative Zahl bzw. eine Zahl größer 255 gespeichert werden, wird es entsprechend im Statusregister vermerkt
-            und R0 wird der Wert 0 zugewiesen.<br>
-            <br>
-            Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
-            zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
-            beschrieben.<br>
-            <br>
-            Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+      <div id="about" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <article class="media">
+              <div class="media-left">
+                <figure class="image is-64x64">
+                  <img src="https://avatars3.githubusercontent.com/u/34038755?s=88&v=4" alt="Image">
+                </figure>
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
+                    <br>
+                    I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
+                    <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>; <a onclick="openF()">Source Code Pro(Font of the code textarea)</a>
+                  </p>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
+        <button class="modal-close is-large" aria-label="close" onclick="aboutc()"></button>
       </div>
-      <button class="modal-close is-large" aria-label="close" onclick="docsc()"></button>
+
+      <div id="documentationN8" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="content">
+              Befehle im Ladon Assembler Code (.lasm)<br>
+              <br>
+              LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
+              DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
+              STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
+              ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
+              SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
+              MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
+              DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
+              JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
+              JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
+              JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
+              JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
+              JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
+              JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
+              JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
+              END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
+              <br>
+              Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
+              <br>
+              Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
+              sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
+              ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
+              Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
+              <br>
+              Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
+              <br>
+              Negative Wert sowie Werte über 255 werden nicht unterstützt. <br>
+              <br>
+              Das teilen durch 0 wird nicht unterstützt. <br>
+              <br>
+              Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
+              des Codes unterbrochen.<br>
+              <br>
+              Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
+              als .lasm-Datei gespeichert wird und die Datei nach UTF-8 codiert wird.<br>
+              <br>
+              Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
+              <br>
+              - 00000000 steht für eine psoitve Zahl zwischen 1 und 255 <br>
+              - 10000000 steht für eine Zahl größer als 255 (Overflow) <br>
+              - 00000001 steht für eine negative Zahl <br>
+              - 10000001 steht für den Wert 0 <br>
+              <br>
+              Sollte in R0 eine negative Zahl bzw. eine Zahl größer 255 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+              und R0 wird der Wert 0 zugewiesen.<br>
+              <br>
+              Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
+              zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
+              beschrieben.<br>
+              <br>
+              Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="docsn8c()"></button>
+      </div>
+
+      <div id="documentationI8" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="content">
+              Befehle im Ladon Assembler Code (.lasm)<br>
+              <br>
+              LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
+              DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
+              STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
+              ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
+              SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
+              MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
+              DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
+              JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
+              JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
+              JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
+              JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
+              JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
+              JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
+              JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
+              END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
+              <br>
+              Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
+              <br>
+              Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
+              sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
+              ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
+              Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
+              <br>
+              Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
+              <br>
+              Es werden nur ganze Zahlen von -128 bis 127 unterstützt. <br>
+              <br>
+              Das teilen durch 0 wird nicht unterstützt. <br>
+              <br>
+              Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
+              des Codes unterbrochen.<br>
+              <br>
+              Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
+              als .lasm-Datei gespeichert wird und die Datei nach UTF-8 codiert wird.<br>
+              <br>
+              Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
+              <br>
+              - 00000000 steht für eine psoitve Zahl zwischen 1 und 255 <br>
+              - 10000000 steht für eine Zahl größer als 127 (Positiver Overflow) <br>
+              - 00000011 steht für eine Zahl kleiner -128 (Negativer Overflow) <br>
+              - 00000001 steht für eine negative Zahl <br>
+              - 10000001 steht für den Wert 0 <br>
+              <br>
+              Sollte in R0 eine Zahl kleiner -128 bzw. eine Zahl größer 127 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+              und R0 wird der Wert 0 zugewiesen.<br>
+              <br>
+              Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
+              zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
+              beschrieben.<br>
+              <br>
+              Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="docsi8c()"></button>
+      </div>
+
     </div>
 
     <script type="text/javascript">
@@ -390,11 +503,17 @@
       function aboutc() {
         document.getElementById("about").classList.remove("is-active");
       }
-      function docs() {
-        document.getElementById("documentation").classList.add("is-active");
+      function docsn8() {
+        document.getElementById("documentationN8").classList.add("is-active");
       }
-      function docsc() {
-        document.getElementById("documentation").classList.remove("is-active");
+      function docsn8c() {
+        document.getElementById("documentationN8").classList.remove("is-active");
+      }
+      function docsi8() {
+        document.getElementById("documentationI8").classList.add("is-active");
+      }
+      function docsi8c() {
+        document.getElementById("documentationI8").classList.remove("is-active");
       }
       function resetR() {
         if(state != "stop"){
@@ -416,8 +535,8 @@
         document.getElementById("r13").innerHTML = "00000000";
         document.getElementById("r14").innerHTML = "00000000";
         document.getElementById("r15").innerHTML = "00000000";
-        document.getElementById("sr1").innerHTML = "00000000";
-        document.getElementById("sr2").innerHTML = "00000000";
+        document.getElementById("sr").innerHTML = "00000000";
+        document.getElementById("bz").innerHTML = "00000000";
         document.getElementById("r0d").innerHTML = "0";
         document.getElementById("r1d").innerHTML = "0";
         document.getElementById("r2d").innerHTML = "0";
@@ -434,6 +553,8 @@
         document.getElementById("r13d").innerHTML = "0";
         document.getElementById("r14d").innerHTML = "0";
         document.getElementById("r15d").innerHTML = "0";
+        document.getElementById("bzd").innerHTML = "0";
+
       }
       function resetL() {
         if(state == "stop"){
@@ -442,6 +563,13 @@
 
         }
       }
+
+      setTimeout(function(){
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("machine").style.display = "inline";
+
+      }, 1000);
 
     </script>
 
