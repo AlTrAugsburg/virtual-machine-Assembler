@@ -6,24 +6,21 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 [Download the latest release here!](https://github.com/AlTrAugsburg/virtual-machine-Assembler/releases)
 
-## What can you do on Version 1.0.0?
+## What can you do on Version 1.1.0?
 
 * Read .lasm files
 * Save code as .lasm file
 * Save log
 * Execute code
 * Clear register
+* Choose between to 8-bit machines, one supports numbers from -128 to 127, the other from 0 to 255
 
-## What is new in Version 1.0.1?
+## Fixed Issues
 
-* Added SR which stores the flag of the register R0
-* If there should be a negative number loaded in R0, instead R0 gets flagged and is set to 0
-* Same procedure with overflow
-* Bug (see Issue #1) was fixed
+* The issues #1 and #2 should make no problem in this version
 
 ## What's coming next?
 
-* There will be modes for the machine. One will support numbers from -127 to 127, the other will support numbers from 0 to 255
-* Maybe a new mode for the code area
+* A new mode for the code area
 
 **Author: Albert Traut**
