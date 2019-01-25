@@ -1,6 +1,6 @@
 {
   "name": "virtual-machine-assembler",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A virtual machine (VM) to learn Assembler",
   "main": "main.js",
   "scripts": {
@@ -25,5 +25,8 @@
   "homepage": "https://github.com/AlTrAugsburg/virtual-machine-Assembler#readme",
   "devDependencies": {
     "electron": "^4.0.1"
+  },
+  "dependencies": {
+    "electron-packager": "^13.0.1"
   }
 }

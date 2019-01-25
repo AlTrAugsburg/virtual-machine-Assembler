@@ -42,6 +42,8 @@
 
      <script src="js/runCodei8.js"></script>
 
+     <script src="http://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
+
     <script type="text/javascript">
       function openGithub() {
         require("electron").shell.openExternal("https://github.com/AlTrAugsburg/virtual-machine-Assembler");
@@ -57,6 +59,9 @@
       }
       function openB() {
         require("electron").shell.openExternal("https://electronjs.org");
+      }
+      function openM() {
+        require("electron").shell.openExternal("https://github.com/ccampbell/mousetrap");
       }
       function saveL() {
         if(state != "stop"){
@@ -110,6 +115,8 @@
                 return;
             }
 
+            fileOpen = fileName;
+
             // fileName is a string that contains the path and filename created in the save file dialog.
             fs.writeFile(fileName, content, (err) => {
                 if(err){
@@ -119,6 +126,40 @@
                 alert("The file has been succesfully saved");
             });
         });
+      }
+      function saveAs() {
+        if(state != "stop"){
+          return;
+        }
+        var app = require('electron').remote;
+        var dialog = app.dialog;
+        var fs = require('fs');
+        let content = document.getElementById("code").value;
+
+        // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+        dialog.showSaveDialog(null, {
+          filters: [
+            { name: 'Ladon Assembler Code (*.lasm)', extensions: ['lasm'] },
+            { name: 'Text File (*.txt)', extensions: ['txt'] }
+          ]
+        }, (fileName) => {
+            if (fileName === undefined){
+                console.log("You didn't save the file");
+                return;
+            }
+
+            fileOpen = fileName;
+
+            // fileName is a string that contains the path and filename created in the save file dialog.
+            fs.writeFile(fileName, content, (err) => {
+                if(err){
+                    alert("An error ocurred creating the file "+ err.message)
+                }
+
+                alert("The file has been succesfully saved");
+            });
+        });
+
       }
       function openA() {
         if(state != "stop"){
@@ -141,6 +182,8 @@
 
             var fileName = fileNames[0];
 
+            fileOpen = fileNames[0];
+
             fs.readFile(fileName, 'utf-8', (err, data) => {
                 if(err){
                     alert("An error ocurred reading the file :" + err.message);
@@ -152,6 +195,14 @@
             });
         });
       }
+
+      //Tastaturbefehle
+
+      Mousetrap.bind(['command+s', 'ctrl+s'], () => { saveA(); });
+      Mousetrap.bind(['command+alt+s', 'ctrl+alt+s'], () => { saveA(); });
+      Mousetrap.bind(['command+o', 'ctrl+o'], () => { openA(); });
+      Mousetrap.bind(['command+r', 'ctrl+r'], () => { runCode(); });
+
     </script>
 
     <!--Virtual machine-->
@@ -243,7 +294,7 @@
             <div class="title is-4" style="font-weight: bold;">
               Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8484;</span></div><br><br>
               <div>
-                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open code</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save code</button>
+                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAs()">Save as</button>
               </div>
             </div>
             <div class="control">
@@ -357,7 +408,7 @@
                     <strong>Albert Traut</strong> <small>alias: AlTrAugsburg</small> <small>E-Mail: vma@ladon.xyz</small>
                     <br>
                     I'm a student and hobby-programmer form Augsburg, Bavaria in Germany. Look at my other projects on <a onclick="openG()">Github</a>.
-                    <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>; <a onclick="openF()">Source Code Pro(Font of the code textarea)</a>
+                    <br>Used software: <a onclick="openB()">Bulma(CSS-Framework)</a>; <a onclick="openE()">Electron(Framework for Desktop Application)</a>; <a onclick="openF()">Source Code Pro(Font of the code textarea)</a>; <a onclick="openM()">Moustrap(for keyboard shortcuts)</a>
                   </p>
                 </div>
               </div>
