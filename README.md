@@ -2,7 +2,7 @@
 
 ![Example picture](https://raw.githubusercontent.com/AlTrAugsburg/virtual-machine-Assembler/master/assets/example.png)
 
-A virtual machine to learn the programming language Assembler. Written with [Electron](https://electronjs.org "Electron homepage") and [Bulma](https://bulma.io). Still in work.
+A virtual machine to learn the programming language Assembler. Written with [Electron](https://electronjs.org "Electron homepage") , [Bulma](https://bulma.io), [Mousetrap](https://github.com/ccampbell/mousetrap). Still in work.
 
 [Download the latest release here!](https://github.com/AlTrAugsburg/virtual-machine-Assembler/releases)
 
@@ -21,6 +21,6 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 ## What's coming next?
 
-* A new mode for the code area
+A new mode for the code area and two new machines :smile:
 
 **Author: Albert Traut**
