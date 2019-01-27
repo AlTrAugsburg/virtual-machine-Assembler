@@ -545,6 +545,21 @@
         <button class="modal-close is-large" aria-label="close" onclick="docsi8c()"></button>
       </div>
 
+      <div class="modal" id="settings">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+
+          <h1 class="title is-2">Settings</h1><br>
+          <form class="" action="javascript:saveS();">
+            <button class="button is-primary" type="submit" name="button">Save settings</button>
+          </form>
+
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="settingsc()"></button>
+      </div>
+
     </div>
 
     <script type="text/javascript">
@@ -565,6 +580,12 @@
       }
       function docsi8c() {
         document.getElementById("documentationI8").classList.remove("is-active");
+      }
+      function settings() {
+        document.getElementById("settings").classList.add("is-active");
+      }
+      function settingsc() {
+        document.getElementById("settings").classList.remove("is-active");
       }
       function resetR() {
         if(state != "stop"){
