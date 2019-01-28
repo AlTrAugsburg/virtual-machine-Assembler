@@ -211,6 +211,17 @@ function runCode(){
 
             }
 
+            //Schauen ob r0 < 0
+            if(r0 < 0){
+
+              //Im SR vermerken
+
+              document.getElementById("sr").innerHTML = "00000001";
+
+              srActive = true;
+
+            }
+
             //Logeintrag
 
             document.getElementById("log").value = "Command " + (bz+1) + ": LOAD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
