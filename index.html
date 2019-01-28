@@ -359,12 +359,15 @@
                   8-bit; natural numbers
                 </a>
                 <a class="navbar-item" href="integer8.html">
-                  8 bit; integers
+                  8-bit; integers
                 </a>
                 <hr class="navbar-divider">
-                <div class="navbar-item">
-                  Here will be something soon
-                </div>
+                <a class="navbar-item" href="natural16.html">
+                  16-bit; natural numbers
+                </a>
+                <a class="navbar-item" href="integer16.html">
+                  16-bit; integer
+                </a>
               </div>
             </div>
 
@@ -379,12 +382,15 @@
                   8-bit; natural numbers
                 </a>
                 <a class="navbar-item" onclick="docsi8()">
-                  8 bit; integers
+                  8-bit; integers
                 </a>
                 <hr class="navbar-divider">
-                <div class="navbar-item">
-                  Here will be something soon
-                </div>
+                <a class="navbar-item" onclick="docsn16()">
+                  16-bit; natural numbers
+                </a>
+                <a class="navbar-item" onclick="docsi16()">
+                  16-bit; integers
+                </a>
               </div>
             </div>
 
@@ -594,7 +600,7 @@
               ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
               Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
               <br>
-              Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
+              Bei R0 handelt es sich in der Fachsprache um einen Akkumulator. <br>
               <br>
               Negative Wert sowie Werte über 255 werden nicht unterstützt. <br>
               <br>
@@ -657,7 +663,7 @@
               ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
               Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
               <br>
-              Bei R0 handelt es sich in der Fachsprache Akkumulator. <br>
+              Bei R0 handelt es sich in der Fachsprache um einen Akkumulator. <br>
               <br>
               Es werden nur ganze Zahlen von -128 bis 127 unterstützt. <br>
               <br>
@@ -671,7 +677,7 @@
               <br>
               Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
               <br>
-              - 00000000 steht für eine psoitve Zahl zwischen 1 und 255 <br>
+              - 00000000 steht für eine psoitve Zahl zwischen 1 und 127 <br>
               - 10000000 steht für eine Zahl größer als 127 (Positiver Overflow) <br>
               - 00000011 steht für eine Zahl kleiner -128 (Negativer Overflow) <br>
               - 00000001 steht für eine negative Zahl <br>
@@ -689,6 +695,133 @@
           </div>
         </div>
         <button class="modal-close is-large" aria-label="close" onclick="docsi8c()"></button>
+      </div>
+
+      <div id="documentationN16" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="content">
+              Befehle im Ladon Assembler Code (.lasm)<br>
+              <br>
+              LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
+              DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
+              STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
+              ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
+              SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
+              MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
+              DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
+              JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
+              JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
+              JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
+              JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
+              JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
+              JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
+              JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
+              END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
+              <br>
+              Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
+              <br>
+              Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
+              sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
+              ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
+              Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
+              <br>
+              Bei R0 handelt es sich in der Fachsprache um einen Akkumulator. <br>
+              <br>
+              Negative Wert sowie Werte über 65535 werden nicht unterstützt. <br>
+              <br>
+              Das teilen durch 0 wird nicht unterstützt. <br>
+              <br>
+              Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
+              des Codes unterbrochen.<br>
+              <br>
+              Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
+              als .lasm-Datei gespeichert wird und die Datei nach UTF-8 codiert wird.<br>
+              <br>
+              Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
+              <br>
+              - 00000000 steht für eine psoitve Zahl zwischen 1 und 65535 <br>
+              - 10000000 steht für eine Zahl größer als 65535 (Overflow) <br>
+              - 00000001 steht für eine negative Zahl <br>
+              - 10000001 steht für den Wert 0 <br>
+              <br>
+              Sollte in R0 eine negative Zahl bzw. eine Zahl größer 65535 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+              und R0 wird der Wert 0 zugewiesen.<br>
+              <br>
+              Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
+              zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
+              beschrieben.<br>
+              <br>
+              Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="docsn16c()"></button>
+      </div>
+
+      <div id="documentationI16" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div class="content">
+              Befehle im Ladon Assembler Code (.lasm)<br>
+              <br>
+              LOAD x  -- Kopiert den Wert in Rx (außer R0), nach R0 <br>
+              DLOAD i -- Lädt nmittelbar die Zahl i in R0 <br>
+              STORE x -- Kopiert den Wert in R0 nach Rx (außer R0) <br>
+              ADD x   -- Addiert den Wert in Rx (außer R0) zum Wert in R0 und legt das Ergebnis in R0 ab <br>
+              SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab <br>
+              MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab <br>
+              DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab <br>
+              JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt <br>
+              JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen <br>
+              JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen <br>
+              JLE n   -- Falls der Wert in R0 kleiner oder gleich null ist (Less or Equal) wird zum n-ten Befehl gesprungen <br>
+              JLT n   -- Falls der Wert in R0 kleiner als null ist (Less Than) wird zum n-ten Befehl gesprungen <br>
+              JEQ n   -- Falls der Wert in R0 gleich null ist (EQuals) wird zum n-ten Befehl gesprungen <br>
+              JNE n   -- Falls der Wert in R0 nicht gleich null ist (Not Equals) wird zum n-ten Befehl gesprungen <br>
+              END     -- Dieser Befehl beendet den Programmablauf und muss am Ende jedes Programms stehen <br>
+              <br>
+              Jeder Befehl muss auf einen Strichpunkt enden, auf welchen in der gleichen Zeile noch ein Kommentar folgen kann.<br>
+              <br>
+              Nach jedem Befehl wird der Wert im Befehlszähler um 1 erhöht, außer bei den Sprüngen, da wird er an den Wert angepasst,
+              sollte die Bedingung erfüllt sein bzw. wenn es sich um einen bedingungslosen Sprung handelt,
+              ansonsten wird auch dort Befehlszählerwert um 1 erhöht.
+              Der Befehlszähler beginnt bei 0 und zeigt, welcher Befehl als nächstes ausgeführt werden soll. <br>
+              <br>
+              Bei R0 handelt es sich in der Fachsprache um einen Akkumulator. <br>
+              <br>
+              Es werden nur ganze Zahlen von -32768 bis 32767 unterstützt. <br>
+              <br>
+              Das teilen durch 0 wird nicht unterstützt. <br>
+              <br>
+              Der Code wird beim Ausführen auf Syntaxfehler überprüft. Sollte ein Fehler jeglicher Art auftauchen wird die Ausführung
+              des Codes unterbrochen.<br>
+              <br>
+              Der Code kann auch in einem beliebigem Editor geschrieben werden. Es muss lediglich darauf geachtet werden, dass es
+              als .lasm-Datei gespeichert wird und die Datei nach UTF-8 codiert wird.<br>
+              <br>
+              Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:<br>
+              <br>
+              - 00000000 steht für eine psoitve Zahl zwischen 1 und 32767 <br>
+              - 10000000 steht für eine Zahl größer als 32767 (Positiver Overflow) <br>
+              - 00000011 steht für eine Zahl kleiner -32768 (Negativer Overflow) <br>
+              - 00000001 steht für eine negative Zahl <br>
+              - 10000001 steht für den Wert 0 <br>
+              <br>
+              Sollte in R0 eine Zahl kleiner -32768 bzw. eine Zahl größer 32767 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+              und R0 wird der Wert 0 zugewiesen.<br>
+              <br>
+              Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
+              zuerst verarbeitet und dann zurückgesetzt. Ansonsten wird nach jedem Befehl bzw. während des Befehls das Statusregister entsprechend
+              beschrieben.<br>
+              <br>
+              Verbesserungsvorschläge für diese Seite gerne an <a href="mailto:vma@ladon.xyz">vma@ladon.xyz</a> senden.
+            </div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="docsi16c()"></button>
       </div>
 
       <div class="modal" id="settings">
@@ -753,6 +886,18 @@
       }
       function docsi8c() {
         document.getElementById("documentationI8").classList.remove("is-active");
+      }
+      function docsn16() {
+        document.getElementById("documentationN16").classList.add("is-active");
+      }
+      function docsn16c() {
+        document.getElementById("documentationN16").classList.remove("is-active");
+      }
+      function docsi16() {
+        document.getElementById("documentationI16").classList.add("is-active");
+      }
+      function docsi16c() {
+        document.getElementById("documentationI16").classList.remove("is-active");
       }
       function settings() {
         document.getElementById("settings").classList.add("is-active");

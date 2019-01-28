@@ -40,7 +40,7 @@
 
     </div>
 
-     <script src="js/runCodei8.js"></script>
+     <script src="js/runCodei16.js"></script>
 
      <script src="js/codeTable.js"></script>
 
@@ -355,14 +355,14 @@
                 <a class="navbar-item" href="index.html">
                   8-bit; natural numbers
                 </a>
-                <a class="navbar-item is-active">
+                <a class="navbar-item" href="integer8.html">
                   8-bit; integers
                 </a>
                 <hr class="navbar-divider">
                 <a class="navbar-item" href="natural16.html">
                   16-bit; natural numbers
                 </a>
-                <a class="navbar-item" href="integer16.html">
+                <a class="navbar-item is-active">
                   16-bit; integers
                 </a>
               </div>
@@ -422,7 +422,7 @@
 
           <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;" id="codeArea1">
             <div class="title is-4" style="font-weight: bold;">
-              Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8484;</span></div><br><br>
+              Code to execute<div style="float: right;"><span class="tag is-warning">16-bit; &#8484;</span></div><br><br>
               <div>
                 <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAs()">Save as</button>
               </div>
@@ -434,7 +434,7 @@
 
           <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px; display: none;" id="codeArea0">
             <div class="title is-4" style="font-weight: bold;">
-              Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8484;</span></div><br><br>
+              Code to execute<div style="float: right;"><span class="tag is-warning">16-bit; &#8484;</span></div><br><br>
               <div>
                 <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openAT()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAT()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAsT()">Save as</button>
               </div>
@@ -469,15 +469,15 @@
                <th>R8</th>
              </tr>
              <tr>
-               <td id="r0">00000000</td>
-               <td id="r1">00000000</td>
-               <td id="r2">00000000</td>
-               <td id="r3">00000000</td>
-               <td id="r4">00000000</td>
-               <td id="r5">00000000</td>
-               <td id="r6">00000000</td>
-               <td id="r7">00000000</td>
-               <td id="r8">00000000</td>
+               <td id="r0">00000000 00000000</td>
+               <td id="r1">00000000 00000000</td>
+               <td id="r2">00000000 00000000</td>
+               <td id="r3">00000000 00000000</td>
+               <td id="r4">00000000 00000000</td>
+               <td id="r5">00000000 00000000</td>
+               <td id="r6">00000000 00000000</td>
+               <td id="r7">00000000 00000000</td>
+               <td id="r8">00000000 00000000</td>
              </tr>
              <tr>
                <td id="r0d" class="dezi">0</td>
@@ -502,13 +502,13 @@
                <th>BZ</th>
              </tr>
              <tr>
-               <td id="r9">00000000</td>
-               <td id="r10">00000000</td>
-               <td id="r11">00000000</td>
-               <td id="r12">00000000</td>
-               <td id="r13">00000000</td>
-               <td id="r14">00000000</td>
-               <td id="r15">00000000</td>
+               <td id="r9">00000000 00000000</td>
+               <td id="r10">00000000 00000000</td>
+               <td id="r11">00000000 00000000</td>
+               <td id="r12">00000000 00000000</td>
+               <td id="r13">00000000 00000000</td>
+               <td id="r14">00000000 00000000</td>
+               <td id="r15">00000000 00000000</td>
                <td id="sr">00000000</td>
                <td id="bz">00000000</td>
              </tr>
@@ -906,22 +906,22 @@
         if(state != "stop"){
           return;
         }
-        document.getElementById("r0").innerHTML = "00000000";
-        document.getElementById("r1").innerHTML = "00000000";
-        document.getElementById("r2").innerHTML = "00000000";
-        document.getElementById("r3").innerHTML = "00000000";
-        document.getElementById("r4").innerHTML = "00000000";
-        document.getElementById("r5").innerHTML = "00000000";
-        document.getElementById("r6").innerHTML = "00000000";
-        document.getElementById("r7").innerHTML = "00000000";
-        document.getElementById("r8").innerHTML = "00000000";
-        document.getElementById("r9").innerHTML = "00000000";
-        document.getElementById("r10").innerHTML = "00000000";
-        document.getElementById("r11").innerHTML = "00000000";
-        document.getElementById("r12").innerHTML = "00000000";
-        document.getElementById("r13").innerHTML = "00000000";
-        document.getElementById("r14").innerHTML = "00000000";
-        document.getElementById("r15").innerHTML = "00000000";
+        document.getElementById("r0").innerHTML = "00000000 00000000";
+        document.getElementById("r1").innerHTML = "00000000 00000000";
+        document.getElementById("r2").innerHTML = "00000000 00000000";
+        document.getElementById("r3").innerHTML = "00000000 00000000";
+        document.getElementById("r4").innerHTML = "00000000 00000000";
+        document.getElementById("r5").innerHTML = "00000000 00000000";
+        document.getElementById("r6").innerHTML = "00000000 00000000";
+        document.getElementById("r7").innerHTML = "00000000 00000000";
+        document.getElementById("r8").innerHTML = "00000000 00000000";
+        document.getElementById("r9").innerHTML = "00000000 00000000";
+        document.getElementById("r10").innerHTML = "00000000 00000000";
+        document.getElementById("r11").innerHTML = "00000000 00000000";
+        document.getElementById("r12").innerHTML = "00000000 00000000";
+        document.getElementById("r13").innerHTML = "00000000 00000000";
+        document.getElementById("r14").innerHTML = "00000000 00000000";
+        document.getElementById("r15").innerHTML = "00000000 00000000";
         document.getElementById("sr").innerHTML = "00000000";
         document.getElementById("bz").innerHTML = "00000000";
         document.getElementById("r0d").innerHTML = "0";

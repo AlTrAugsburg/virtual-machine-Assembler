@@ -1,11 +1,15 @@
 /*
 
-  Dieser Code ist für die Virtuale Maschine mit 8-bit geschrieben. Sie akzeptiert nur ganeze Zahlen zwischen -128
-  und 127 und kann auch nur mit diesen rechnen.
+  Dieser Code ist für die Virtuale Maschine mit 8-bit geschrieben. Sie akzeptiert nur ganeze Zahlen zwischen -32768
+  und 32767 und kann auch nur mit diesen rechnen.
 
   Wird auf der Seite integer8.html benutzt. Sollte ab der Version 1.0.1 stabil sein.
 
 */
+
+function splice(start, idx, rem, str) {
+    return start.slice(0, idx) + str + start.slice(idx + Math.abs(rem));
+}
 
 var codeFromArea;
 var code;
@@ -147,13 +151,13 @@ function runCode(){
 
       Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:
 
-      - 00000000 steht für eine psoitve Zahl zwischen 1 und 127
-      - 10000000 steht für eine Zahl größer als 127 (Overflow)
-      - 00000011 steht für eine Zahl kleiner -128 (Overflow)
+      - 00000000 steht für eine psoitve Zahl zwischen 1 und 32767
+      - 10000000 steht für eine Zahl größer als 32767 (Overflow)
+      - 00000011 steht für eine Zahl kleiner -32768 (Overflow)
       - 00000001 steht für eine negative Zahl
       - 10000001 steht für den Wert 0
 
-      Sollte in R0 eine negative Zahl bzw. eine Zahl größer 127 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+      Sollte in R0 eine negative Zahl bzw. eine Zahl größer 255 gespeichert werden, wird es entsprechend im Statusregister vermerkt
       und R0 wird der Wert 0 zugewiesen.
 
       Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
@@ -249,7 +253,7 @@ function runCode(){
           break;
 
         case "DLOAD":
-          //Operation lautet Wert i in R0 zu laden, wobei i nicht größer als 127 bzw. kleiner als -128 sein darf
+          //Operation lautet Wert i in R0 zu laden, wobei i nicht größer als 32767 bzw. kleiner als -32768 sein darf
 
           if(srActive){
             //Statusregister zurücksetzten
@@ -282,8 +286,8 @@ function runCode(){
 
           }
 
-          if(parseInt(befehl[1]) > 127){
-            //Der Wert von i ist größer als 127 -> Overflow -> in SR eintragen
+          if(parseInt(befehl[1]) > 32767){
+            //Der Wert von i ist größer als 32767 -> Overflow -> in SR eintragen
 
             document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -293,9 +297,9 @@ function runCode(){
 
             srActive = true;
 
-            //Da es sich um eine Zahl größer 255 handelt wird r0 auf 0 zurückgesetzt
+            //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
 
-            document.getElementById("r0").innerHTML = "00000000";
+            document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
 
             r0 = 0;
@@ -304,8 +308,8 @@ function runCode(){
 
           else {
 
-            if(parseInt(befehl[1]) < -128){
-              //Der Wert von i ist kleiner -128 -> in SR eintragen
+            if(parseInt(befehl[1]) < -32768){
+              //Der Wert von i ist kleiner -32768 -> in SR eintragen
 
               var sr = document.getElementById("sr").innerHTML = "00000011";
 
@@ -313,9 +317,9 @@ function runCode(){
 
               document.getElementById("log").value = "Negative overflow in line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
-              //Da es sich um eine Zahl kleiner -128 handelt wird r0 auf 0 zurückgesetzt
+              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
 
-              document.getElementById("r0").innerHTML = "00000000";
+              document.getElementById("r0").innerHTML = "00000000 00000000";
               document.getElementById("r0d").innerHTML = "0";
 
               r0 = 0;
@@ -334,9 +338,10 @@ function runCode(){
 
                 r0 = parseInt(befehl[1]);
 
-                var r0p = 128 + r0;
+                var r0p = 32768 + r0;
 
-                document.getElementById("r0").innerHTML = "1"+("0000000"+Number(r0p).toString(2)).substr(-7);
+                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
+                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
                 document.getElementById("r0d").innerHTML = r0;
 
@@ -356,7 +361,8 @@ function runCode(){
 
                 r0 = parseInt(befehl[1]);
 
-                document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+                var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
                 document.getElementById("r0d").innerHTML = r0;
 
@@ -522,8 +528,8 @@ function runCode(){
 
           r0 = r0 + parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML);
 
-          if(r0 > 127){
-            //Wert in R0 ist größer 127 -> Overflow -> in SR eintragen
+          if(r0 > 32767){
+            //Wert in R0 ist größer 32767 -> Overflow -> in SR eintragen
 
             document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -535,7 +541,7 @@ function runCode(){
 
             //Da es sich um eine Zahl größer 127 handelt wird r0 auf 0 zurückgesetzt
 
-            document.getElementById("r0").innerHTML = "00000000";
+            document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
 
             r0  = 0;
@@ -546,9 +552,9 @@ function runCode(){
 
             if(r0 < 0){
 
-              if(r0 < -128){
+              if(r0 < -32768){
 
-                //Wert in R0 ist kleiner -128 -> Overflow -> in SR eintragen
+                //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
 
                 document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -558,9 +564,9 @@ function runCode(){
 
                 srActive = true;
 
-                //Da es sich um eine Zahl kleiner -128 handelt wird r0 auf 0 zurückgesetzt
+                //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
 
-                document.getElementById("r0").innerHTML = "00000000";
+                document.getElementById("r0").innerHTML = "00000000 00000000";
                 document.getElementById("r0d").innerHTML = "0";
 
                 r0 = 0;
@@ -575,9 +581,10 @@ function runCode(){
 
                 srActive = true;
 
-                var r0p = 128 + r0;
+                var r0p = 32768 + r0;
 
-                document.getElementById("r0").innerHTML = "1"+("0000000"+Number(r0p).toString(2)).substr(-7);
+                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
+                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
                 document.getElementById("r0d").innerHTML = r0;
 
@@ -597,7 +604,8 @@ function runCode(){
 
               }
 
-              document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
               document.getElementById("r0d").innerHTML = r0;
 
@@ -677,9 +685,9 @@ function runCode(){
 
           if(r0 < 0){
 
-            if(r0 < -128){
+            if(r0 < -32768){
 
-              //Wert in R0 ist kleiner -128 -> Overflow -> in SR eintragen
+              //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
 
               document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -689,9 +697,9 @@ function runCode(){
 
               srActive = true;
 
-              //Da es sich um eine Zahl kleiner -128 handelt wird r0 auf 0 zurückgesetzt
+              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
 
-              document.getElementById("r0").innerHTML = "00000000";
+              document.getElementById("r0").innerHTML = "00000000 00000000";
               document.getElementById("r0d").innerHTML = "0";
 
               r0 = 0;
@@ -706,9 +714,10 @@ function runCode(){
 
               srActive = true;
 
-              var r0p = 128 + r0;
+              var r0p = 32768 + r0;
 
-              document.getElementById("r0").innerHTML = "1"+("0000000"+Number(r0p).toString(2)).substr(-7);
+              var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
               document.getElementById("r0d").innerHTML = r0;
 
@@ -718,8 +727,8 @@ function runCode(){
 
           else {
 
-            if(r0 > 127){
-              //Wert in R0 ist größer 127 -> Overflow -> in SR eintragen
+            if(r0 > 32767){
+              //Wert in R0 ist größer 32767 -> Overflow -> in SR eintragen
 
               document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -729,9 +738,9 @@ function runCode(){
 
               srActive = true;
 
-              //Da es sich um eine Zahl größer 127 handelt wird r0 auf 0 zurückgesetzt
+              //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
 
-              document.getElementById("r0").innerHTML = "00000000";
+              document.getElementById("r0").innerHTML = "00000000 00000000";
               document.getElementById("r0d").innerHTML = "0";
 
               r0  = 0;
@@ -750,7 +759,8 @@ function runCode(){
 
               }
 
-              document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
               document.getElementById("r0d").innerHTML = r0;
 
@@ -827,8 +837,8 @@ function runCode(){
 
           r0 = r0 * parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML);
 
-          if(r0 > 127){
-            //Wert in R0 ist größer 127 -> Overflow -> in SR vermerken
+          if(r0 > 32767){
+            //Wert in R0 ist größer 32767 -> Overflow -> in SR vermerken
 
             document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -838,9 +848,9 @@ function runCode(){
 
             srActive = true;
 
-            //Da es sich um eine Zahl größer 127 handelt wird r0 auf 0 zurückgesetzt
+            //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
 
-            document.getElementById("r0").innerHTML = "00000000";
+            document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
 
             r0  = 0;
@@ -851,9 +861,9 @@ function runCode(){
 
             if(r0 < 0){
 
-              if(r0 < -128){
+              if(r0 < -32768){
 
-                //Wert in R0 ist kleiner -128 -> Overflow -> in SR eintragen
+                //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
 
                 document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -863,9 +873,9 @@ function runCode(){
 
                 srActive = true;
 
-                //Da es sich um eine Zahl kleiner -128 handelt wird r0 auf 0 zurückgesetzt
+                //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
 
-                document.getElementById("r0").innerHTML = "00000000";
+                document.getElementById("r0").innerHTML = "00000000 00000000";
                 document.getElementById("r0d").innerHTML = "0";
 
                 r0 = 0;
@@ -880,9 +890,10 @@ function runCode(){
 
                 srActive = true;
 
-                var r0p = 128 + r0;
+                var r0p = 32768 + r0;
 
-                document.getElementById("r0").innerHTML = "1"+("0000000"+Number(r0p).toString(2)).substr(-7);
+                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
+                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
                 document.getElementById("r0d").innerHTML = r0;
 
@@ -902,7 +913,8 @@ function runCode(){
 
               }
 
-              document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
               document.getElementById("r0d").innerHTML = r0;
 
@@ -993,9 +1005,9 @@ function runCode(){
 
           if(r0 < 0){
 
-            if(r0 < -128){
+            if(r0 < -32768){
 
-              //Wert in R0 ist kleiner -128 -> Overflow -> in SR eintragen
+              //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
 
               document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
@@ -1005,9 +1017,9 @@ function runCode(){
 
               srActive = true;
 
-              //Da es sich um eine Zahl kleiner -128 handelt wird r0 auf 0 zurückgesetzt
+              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
 
-              document.getElementById("r0").innerHTML = "00000000";
+              document.getElementById("r0").innerHTML = "00000000 00000000";
               document.getElementById("r0d").innerHTML = "0";
 
               r0 = 0;
@@ -1022,9 +1034,10 @@ function runCode(){
 
               srActive = true;
 
-              var r0p = 128 + r0;
+              var r0p = 32768 + r0;
 
-              document.getElementById("r0").innerHTML = "1"+("0000000"+Number(r0p).toString(2)).substr(-7);
+              var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
               document.getElementById("r0d").innerHTML = r0;
 
@@ -1044,7 +1057,8 @@ function runCode(){
 
             }
 
-            document.getElementById("r0").innerHTML = ("00000000"+Number(r0).toString(2)).substr(-8);
+            var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+            document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
             document.getElementById("r0d").innerHTML = r0;
 
