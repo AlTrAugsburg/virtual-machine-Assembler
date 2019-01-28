@@ -6,21 +6,22 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 [Download the latest release here!](https://github.com/AlTrAugsburg/virtual-machine-Assembler/releases)
 
-## What can you do on Version 1.1.0?
+## What can you do on Version 1.2.0?
 
 * Read .lasm files
 * Save code as .lasm file
 * Save log
 * Execute code
 * Clear register
-* Choose between to 8-bit machines, one supports numbers from -128 to 127, the other from 0 to 255
+* Choose between two 8-bit machines, one supports numbers from -128 to 127, the other from 0 to 255, and two 16-bit machines, one supports numbers from -32768 to 32767, the other from 0 to 65535
+* Choose between two code area layouts, a simple textarea and a table
 
 ## Fixed Issues
 
-* The issues #1 and #2 should make no problem in this version
+* The issues #1 to #4 should make no problem in this version
 
 ## What's coming next?
 
-A new mode for the code area and two new machines :smile:
+We'll see, I have now no new ideas yet, but maybe some new styles or a new design. :smile:
 
 **Author: Albert Traut**
