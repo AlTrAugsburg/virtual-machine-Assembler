@@ -42,9 +42,110 @@
 
      <script src="js/runCodei8.js"></script>
 
+     <script src="js/codeTable.js"></script>
+
      <script src="http://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
 
     <script type="text/javascript">
+
+      //Diese Variable beinhaltet die Location des letzten geöffneten Dokuments
+      var fileOpen = "";
+
+      //Variablen der Einstellungen
+      var delay = localStorage.getItem("delay");
+      var codeArea = localStorage.getItem("codeArea");
+
+      //Beim ersten Start werden default Einstellung gesetzt
+
+      if(delay==null){
+        localStorage.setItem("delay", "1");
+      }
+
+      if(codeArea==null){
+        localStorage.setItem("codeArea", "1");
+      }
+
+      //Speichert Einstellungen
+      function saveS() {
+
+        var app = require('electron').remote;
+        var dialog = app.dialog;
+
+        //Check values
+
+        if(delay == document.getElementById("delayS").value&&codeArea == document.getElementById("codeAreaS").value){
+          //Keine Änderungen -> Es muss nichts gespeichert werden
+          return;
+        }
+        if(delay != document.getElementById("delayS").value&&document.getElementById("delayS").value == "0"){
+          //Delay der Ausführung soll auf 0 Sekunden gesetzt werden -> Warnung ausgeben
+          dialog.showMessageBox({
+            type: "warning",
+            buttons: ["I still want this", "I will overthink my decision"],
+            title: "Save settings",
+            message: "If you set the delay to 0 seconds it will maybe impossible to stop/pause the code execution, except by refreshing or leaving the site!",
+            noLink: true,
+            cancelId: 1
+          }, (response) => {
+            if(response == 1){
+              console.log("Nope");
+              return;
+            }
+            else {
+              //Show "normal" warning
+
+              dialog.showMessageBox({
+                type: "warning",
+                buttons: ["I got it", "Wait a sec"],
+                title: "Save settings",
+                message: "If you save the new settings the site will refresh. Your code in the code area will be deleted if you havn't saved it!",
+                noLink: true,
+                cancelId: 1
+              }, (response) => {
+                if(response == 0){
+                  //Set new values
+
+                  delay = document.getElementById("delayS").value;
+                  codeArea = document.getElementById("codeAreaS").value;
+
+                  localStorage.setItem("delay", document.getElementById("delayS").value);
+
+                  location.reload();
+                }
+              });
+            }
+          });
+        }
+
+        else {
+
+          //Show "normal" warning
+
+          dialog.showMessageBox({
+            type: "warning",
+            buttons: ["I got it", "Wait a sec"],
+            title: "Save settings",
+            message: "If you save the new settings the site will refresh. Your code in the code area will be deleted if you havn't saved it!",
+            noLink: true,
+            cancelId: 1
+          }, (response) => {
+            if(response == 0){
+              //Set new values
+
+              delay = document.getElementById("delayS").value;
+              codeArea = document.getElementById("codeAreaS").value;
+
+              localStorage.setItem("delay", document.getElementById("delayS").value);
+              localStorage.setItem("codeArea", document.getElementById("codeAreaS").value);
+
+              location.reload();
+            }
+          });
+
+        }
+
+      }
+
       function openGithub() {
         require("electron").shell.openExternal("https://github.com/AlTrAugsburg/virtual-machine-Assembler");
       }
@@ -104,28 +205,46 @@
         var fs = require('fs');
         let content = document.getElementById("code").value;
 
-        // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
-        dialog.showSaveDialog(null, {
-          filters: [
-            { name: 'Ladon Assembler Code (*.lasm)', extensions: ['lasm'] }
-          ]
-        }, (fileName) => {
-            if (fileName === undefined){
-                console.log("You didn't save the file");
-                return;
-            }
+        if(fileOpen != ""){
 
-            fileOpen = fileName;
+          fs.writeFile(fileOpen, content, (err) => {
+              if(err){
+                  alert("An error ocurred creating the file "+ err.message)
+              }
 
-            // fileName is a string that contains the path and filename created in the save file dialog.
-            fs.writeFile(fileName, content, (err) => {
-                if(err){
-                    alert("An error ocurred creating the file "+ err.message)
-                }
+              alert("The file has been succesfully saved");
+          });
 
-                alert("The file has been succesfully saved");
-            });
-        });
+        }
+
+        else {
+
+          // You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+          dialog.showSaveDialog(null, {
+            filters: [
+              { name: 'Ladon Assembler Code (*.lasm)', extensions: ['lasm'] },
+              { name: 'Text File (*.txt)', extensions: ['txt'] }
+            ]
+          }, (fileName) => {
+              if (fileName === undefined){
+                  console.log("You didn't save the file");
+                  return;
+              }
+
+              fileOpen = fileName;
+
+              // fileName is a string that contains the path and filename created in the save file dialog.
+              fs.writeFile(fileName, content, (err) => {
+                  if(err){
+                      alert("An error ocurred creating the file "+ err.message)
+                  }
+
+                  alert("The file has been succesfully saved");
+              });
+          });
+
+        }
+
       }
       function saveAs() {
         if(state != "stop"){
@@ -202,6 +321,8 @@
       Mousetrap.bind(['command+alt+s', 'ctrl+alt+s'], () => { saveA(); });
       Mousetrap.bind(['command+o', 'ctrl+o'], () => { openA(); });
       Mousetrap.bind(['command+r', 'ctrl+r'], () => { runCode(); });
+      Mousetrap.bind(['ctrl+t'], () => { addRow(); });
+      Mousetrap.bind(['ctrl+u'], () => { removeRow(); });
 
     </script>
 
@@ -290,7 +411,7 @@
       <div style="height: 94vh; width: 100vw;">
         <div class="columns">
 
-          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;" id="codeArea1">
             <div class="title is-4" style="font-weight: bold;">
               Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8484;</span></div><br><br>
               <div>
@@ -299,6 +420,25 @@
             </div>
             <div class="control">
               <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 69vh;"></textarea>
+            </div>
+          </div>
+
+          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px; display: none;" id="codeArea0">
+            <div class="title is-4" style="font-weight: bold;">
+              Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8469;</span></div><br><br>
+              <div>
+                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openAT()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAT()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAsT()">Save as</button>
+              </div>
+            </div>
+            <div class="control" style="height: 69vh; overflow: auto;">
+              <table class="table is-striped" style="width: 100%;">
+                <tbody id="codeTable">
+                  <tr id="area1">
+                    <th style="font-size: 20px;">1</th>
+                    <td><input class="input" type="text" id="row1"></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
@@ -550,9 +690,36 @@
         <div class="modal-content">
           <div class="box">
 
-          <h1 class="title is-2">Settings</h1><br>
+          <h1 class="title is-2">Settings</h1>
           <form class="" action="javascript:saveS();">
+
+            <div class="field">
+              <label class="label">Delay of the execution</label>
+              <div class="control">
+                <div class="select">
+                  <select id="delayS">
+                    <option value="1">1 second(default)</option>
+                    <option value="2">0.5 seconds</option>
+                    <option value="0">0 seconds &#x26A0;</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Code Area mode</label>
+              <div class="control">
+                <div class="select">
+                  <select id="codeAreaS">
+                    <option value="1">one-area-mode(default)</option>
+                    <option value="0">table-mode</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <button class="button is-primary" type="submit" name="button">Save settings</button>
+
           </form>
 
           </div>
@@ -642,6 +809,38 @@
         document.getElementById("machine").style.display = "inline";
 
       }, 1000);
+
+      //Anpassung des Einstellungsfenster an die aktuellen Einstellungen
+      if(delay != "1"){
+        document.getElementById("delayS").value = delay;
+      }
+      if(codeArea != "1"){
+        document.getElementById("codeAreaS").value = codeArea;
+      }
+      //Delay Zeit in Millisekunden
+
+      var delayT = 1000;
+      if (delay == "0") {
+        delayT = 0;
+      }
+      if(delay == "2"){
+        delayT = 500;
+      }
+
+      if(codeArea == "0"){
+        document.getElementById("codeArea1").style.display = "none";
+        document.getElementById("codeArea0").style.display = "inline";
+      }
+
+      document.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+          addRow();
+        }
+        if (event.keyCode === 8) {
+          removeRow();
+        }
+      });
 
     </script>
 

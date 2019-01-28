@@ -39,8 +39,30 @@ function runCode(){
 
   if(state == "stop"){
 
-    codeFromArea = document.getElementById("code").value;
-    code = codeFromArea.split(/\n/);
+    if(codeArea == "1"){
+      //Code von Textarea holen
+
+      codeFromArea = document.getElementById("code").value;
+      code = codeFromArea.split(/\n/);
+
+    }
+
+    if(codeArea == "0"){
+      //Code von Tabelle holen
+
+      for(var i = 0; i < rows; i++){
+
+        if(i == 0){
+          //Code zu einem Array machen
+          code = [document.getElementById("row"+(i+1)).value];
+        }
+        else {
+          code.push(document.getElementById("row"+(i+1)).value);
+        }
+
+      }
+
+    }
 
     //Arbeitsspeicher R0, wird nach jeder Ausführung auf 0 zurückgesetzt
     r0 = 0;

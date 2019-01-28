@@ -84,7 +84,7 @@
             type: "warning",
             buttons: ["I still want this", "I will overthink my decision"],
             title: "Save settings",
-            message: "If you set the delay to 0 seconds it will be impossible to stop/pause the code execution, except by refreshing or leaving the site!",
+            message: "If you set the delay to 0 seconds it will maybe impossible to stop/pause the code execution, except by refreshing or leaving the site!",
             noLink: true,
             cancelId: 1
           }, (response) => {
@@ -433,15 +433,17 @@
             <div class="title is-4" style="font-weight: bold;">
               Code to execute<div style="float: right;"><span class="tag is-warning">8-bit; &#8469;</span></div><br><br>
               <div>
-                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAs()">Save as</button>
+                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openAT()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAT()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAsT()">Save as</button>
               </div>
             </div>
             <div class="control" style="height: 69vh; overflow: auto;">
-              <table class="table is-striped" style="width: 100%;" id="codeTable">
-                <tr id="area1">
-                  <th style="font-size: 20px;">1</th>
-                  <td><input class="input" type="text" id="row1"></td>
-                </tr>
+              <table class="table is-striped" style="width: 100%;">
+                <tbody id="codeTable">
+                  <tr id="area1">
+                    <th style="font-size: 20px;">1</th>
+                    <td><input class="input" type="text" id="row1"></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -820,6 +822,15 @@
       }
       if(codeArea != "1"){
         document.getElementById("codeAreaS").value = codeArea;
+      }
+      //Delay Zeit in Millisekunden
+
+      var delayT = 1000;
+      if (delay == "0") {
+        delayT = 0;
+      }
+      if(delay == "2"){
+        delayT = 500;
       }
 
       if(codeArea == "0"){
