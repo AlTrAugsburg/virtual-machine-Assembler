@@ -200,3 +200,84 @@
 		-moz-transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
 	}
 }
+
+.animated {
+  -webkit-animation-duration: 7s;
+  animation-duration: 7s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+@-webkit-keyframes bounce {
+  0%, 25% {
+    opacity:0;
+        -ms-transform: rotate(30deg); /* IE 9 */
+	-webkit-transform: rotate(30deg); /* Chrome, Safari, Opera */
+	transform: rotate(30deg);
+  }
+  25%, 50% {
+    opacity:1;
+        -ms-transform: rotate(360deg); /* IE 9 */
+	-webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+	transform: rotate(360deg);
+  }
+  50%, 75% {
+    opacity:0;
+        -ms-transform: rotate(30deg); /* IE 9 */
+	-webkit-transform: rotate(30deg); /* Chrome, Safari, Opera */
+	transform: rotate(30deg);
+  }
+  75%, 100% {
+    opacity:1;
+        -ms-transform: rotate(360deg); /* IE 9 */
+	-webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+	transform: rotate(360deg);
+  }
+}
+@keyframes bounce {
+  0% {
+    opacity:0;
+        -ms-transform: rotate(0deg); /* IE 9 */
+	-webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+	transform: rotate(0deg);
+  }
+  25% {
+    opacity:1;
+        -ms-transform: rotate(360deg); /* IE 9 */
+	-webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+	transform: rotate(360deg);
+  }
+  50% {
+    opacity:0;
+        -ms-transform: rotate(0deg); /* IE 9 */
+	-webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+	transform: rotate(0deg);
+  }
+  75% {
+    opacity:1;
+        -ms-transform: rotate(360deg); /* IE 9 */
+	-webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+	transform: rotate(360deg);
+  }
+  100% {
+    opacity:0;
+        -ms-transform: rotate(0deg); /* IE 9 */
+	-webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+	transform: rotate(0deg);
+  }
+}
+.bounce {
+  -webkit-animation-name: bounce;
+  animation-name: bounce;
+}
+#animated-example {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: 100px;
+  left: 100px;
+  border-radius: 50%;
+}

@@ -4,6 +4,8 @@ const { app, BrowserWindow } = require('electron')
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
+let winV
+
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({ width: 1400, height: 800, icon: "assets/klein.ico", resizable: false })
@@ -26,10 +28,38 @@ function createWindow () {
   })
 }
 
+function checkVersion (){
+  //Create the version checking browser window
+  winV = new BrowserWindow({ width: 375, height: 250, frame: false, icon: "assets/klein.ico", resizable: false })
+
+  //Remove top menu
+  //win.setMenu(null);
+
+  // and load the index.html of the app.
+  winV.loadFile('checkVersion.html')
+
+  // Open the DevTools.
+  //winV.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  winV.on('closed', () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    winV = null
+  })
+  winV.on('close', () => {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    createWindow()
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', checkVersion)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
