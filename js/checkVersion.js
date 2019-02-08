@@ -78,7 +78,7 @@ else{
                                       if (err) throw err;
 
                                       //Update integer16.html
-                                      fs.writeFile('js/runCode.js', updateData[7], (err) => {
+                                      fs.writeFile('integer16.html', updateData[7], (err) => {
                                           // throws an error, you could also catch it here
                                           if (err) throw err;
 
