@@ -389,21 +389,36 @@ function runCode(){
             //bzw. um den Status zu setzten, sollte der Wert durch einen Overflow oder eine negative Zahl entstehen
             if(r0 == 0){
 
-                document.getElementById("sr").innerHTML = "10000001";
+              document.getElementById("sr").innerHTML = "10000001";
+
+              srActive = true;
+
+            }
+
+            //Statusregister zurücksetzen, wenn nicht kleiner null
+
+            else {
+
+              if(r0<0){
+
+                document.getElementById("sr").innerHTML = "00000001";
 
                 srActive = true;
 
-            }
-            //Statusregister zurücksetzen
-            else {
+              }
 
-              document.getElementById("sr").innerHTML = "00000000";
+              else {
 
-              srActive = false;
+                document.getElementById("sr").innerHTML = "00000000";
+
+                srActive = false;
+
+              }
 
             }
 
           }
+
 
           if(isNaN(befehl[1])){
             //Der Wert von x ist keine Zahl -> Syntaxfehler
