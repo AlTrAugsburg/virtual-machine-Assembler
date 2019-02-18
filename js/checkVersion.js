@@ -16,7 +16,7 @@ if(!navigator.onLine){
     type: "warning",
     buttons: ["Ok"],
     title: "Internet connection",
-    message: "You aren't connected to the internet! Version check wasm't possible.",
+    message: "You aren't connected to the internet! Version check wasn't possible.",
     noLink: true
   }, (response) => {
     app.getCurrentWindow().close();
