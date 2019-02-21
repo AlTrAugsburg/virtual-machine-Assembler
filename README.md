@@ -22,6 +22,6 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 ## What's coming next?
 
-We'll see, I have now no new ideas yet, but maybe some new styles or a new design. :smile:
+Version updates from server and a warning before leaving application, when the code in the code area wasn't saved. :open_mouth:
 
 **Author: Albert Traut**
