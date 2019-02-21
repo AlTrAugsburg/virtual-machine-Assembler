@@ -54,6 +54,8 @@
       //Variablen der Einstellungen
       var delay = localStorage.getItem("delay");
       var codeArea = localStorage.getItem("codeArea");
+      var version = localStorage.getItem("version");
+      var check = localStorage.getItem("check");
 
       //Beim ersten Start werden default Einstellung gesetzt
 
@@ -64,6 +66,12 @@
       if(codeArea==null){
         localStorage.setItem("codeArea", "1");
       }
+      if(version == null){
+        version = "1.2.1";
+      }
+      if(check == null){
+        localStorage.setItem("check", "1");
+      }
 
       //Speichert Einstellungen
       function saveS() {
@@ -73,7 +81,7 @@
 
         //Check values
 
-        if(delay == document.getElementById("delayS").value&&codeArea == document.getElementById("codeAreaS").value){
+        if(delay == document.getElementById("delayS").value&&codeArea == document.getElementById("codeAreaS").value&&check == document.getElementById("versionUpdateS").value){
           //Keine Änderungen -> Es muss nichts gespeichert werden
           return;
         }
@@ -107,8 +115,11 @@
 
                   delay = document.getElementById("delayS").value;
                   codeArea = document.getElementById("codeAreaS").value;
+                  check = document.getElementById("versionUpdateS").value;
 
                   localStorage.setItem("delay", document.getElementById("delayS").value);
+                  localStorage.setItem("codeArea", document.getElementById("codeAreaS").value);
+                  localStorage.setItem("check", document.getElementById("versionUpdateS").value);
 
                   location.reload();
                 }
@@ -134,9 +145,11 @@
 
               delay = document.getElementById("delayS").value;
               codeArea = document.getElementById("codeAreaS").value;
+              check = document.getElementById("versionUpdateS").value;
 
               localStorage.setItem("delay", document.getElementById("delayS").value);
               localStorage.setItem("codeArea", document.getElementById("codeAreaS").value);
+              localStorage.setItem("check", document.getElementById("versionUpdateS").value);
 
               location.reload();
             }
@@ -826,7 +839,7 @@
         <div class="modal-content">
           <div class="box">
 
-          <h1 class="title is-2">Settings</h1>
+          <h1 class="title is-2" id="settingTitle">Settings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version: </h1>
           <form class="" action="javascript:saveS();">
 
             <div class="field">
@@ -849,6 +862,18 @@
                   <select id="codeAreaS">
                     <option value="1">one-area-mode(default)</option>
                     <option value="0">table-mode</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Check for version update</label>
+              <div class="control">
+                <div class="select">
+                  <select id="versionUpdateS">
+                    <option value="1">true(default)</option>
+                    <option value="0">off</option>
                   </select>
                 </div>
               </div>
@@ -965,6 +990,10 @@
       if(codeArea != "1"){
         document.getElementById("codeAreaS").value = codeArea;
       }
+      if(check != "1"){
+        document.getElementById("versionUpdateS").value = check;
+      }
+
       //Delay Zeit in Millisekunden
 
       var delayT = 1000;
@@ -989,6 +1018,8 @@
           removeRow();
         }
       });
+
+      document.getElementById("settingTitle").innerHTML = document.getElementById("settingTitle").innerHTML + version;
 
     </script>
 

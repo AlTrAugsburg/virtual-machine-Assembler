@@ -82,9 +82,15 @@ else{
                                           // throws an error, you could also catch it here
                                           if (err) throw err;
 
-                                          // success case, the file was saved
-                                          localStorage.setItem("version", request.responseText);
-                                          app.getCurrentWindow().close();
+                                          // Update checkVersion.js
+                                          fs.writeFile('js/checkVersion.js', updateData[8], (err) => {
+                                              // throws an error, you could also catch it here
+                                              if (err) throw err;
+
+                                              // success case, all files were saved
+                                              localStorage.setItem("version", request.responseText);
+                                              app.getCurrentWindow().close();
+                                          });
                                       });
                                   });
                               });
