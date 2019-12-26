@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="overflow: hidden; max-height: 100vh;">
   <head>
     <meta charset="UTF-8">
     <title>VMA</title>
@@ -25,10 +25,68 @@
       .dezi{
         text-align: center;
       }
+      .nav-btn{
+        background: #ffffff00 !important;
+        width: 50px;
+        text-align: center;
+        color: white;
+        padding-top: 4px;
+      }
+      .nav-min:hover{
+        background: #afafaf !important;
+        width: 50px;
+        text-align: center;
+        color: white;
+        padding-top: 4px;
+      }
+      .nav-max:hover{
+        background: #afafaf !important;
+        width: 50px;
+        text-align: center;
+        color: white;
+        padding-top: 4px;
+      }
+      .nav-close:hover{
+        background: #ff4d42cc !important;
+        width: 50px;
+        text-align: center;
+        color: white;
+        padding-top: 4px;
+      }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
   </head>
-  <body style="overflow-x: hidden;">
+  <body style="height: 100vh; max-height: 100vh; -webkit-user-select: none;">
+
+    <!--BEGINN Window Navbar-->
+    <nav class="navbar is-dark is-transparent" style="-webkit-app-region: drag; -webkit-user-select: none;">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <img height="28" width="28" src="assets/klein.png">
+        </a>
+      </div>
+      <div class="navbar-item"  style="color: white !important; font-size: 25px;">
+        Ladon Virtual Machine Assembler
+      </div>
+      <div class="navbar-end">
+        <a class="nav-btn nav-min" id="min-btn" style="-webkit-app-region: no-drag;" onclick="var window = require('electron').remote.getCurrentWindow(); window.minimize();">
+          <div style="font-size: 20px;">
+            &#95;
+          </div>
+        </a>
+        <a class="nav-btn nav-max" id="max-btn" style="-webkit-app-region: no-drag;" onclick="var window = require('electron').remote.getCurrentWindow(); if(!window.isMaximized()){ window.maximize(); } else{ window.unmaximize(); }">
+          <div style="font-size: 25px;">
+            &square;
+          </div>
+        </a>
+        <a class="nav-btn nav-close" id="close-btn" style="-webkit-app-region: no-drag;" onclick="checkIfCodeSaved('close')">
+          <div style="font-size: 25px;">
+            &times;
+          </div>
+        </a>
+      </div>
+    </nav>
+    <!--ENDE Window Navbar-->
 
     <div id="loading" style="height: 100vh; width: 100vw; z-index: 1; background: #fff; top: 0; left: 0; overflow-x: hidden; padding-top: 35vh;">
 
@@ -49,29 +107,33 @@
 
     <script type="text/javascript">
 
+      const {remote} = require('electron')
+      const {dialog} = remote
+
+      function closeWindow() {
+        var window = require('electron').remote.getCurrentWindow();
+        window.close();
+      }
+
       //Diese Variable beinhaltet die Location des letzten geöffneten Dokuments
       var fileOpen = "";
+
+      //Diese Variable beinhaltet den Wert der zuletzt geöffneten/gespeicherten Datei(bei Start: "")
+      var originalCode = "";
 
       //Variablen der Einstellungen
       var delay = localStorage.getItem("delay");
       var codeArea = localStorage.getItem("codeArea");
-      var version = localStorage.getItem("version");
-      var check = localStorage.getItem("check");
 
       //Beim ersten Start werden default Einstellung gesetzt
 
       if(delay==null){
         localStorage.setItem("delay", "1");
+        delay = 1;
       }
 
       if(codeArea==null){
         localStorage.setItem("codeArea", "1");
-      }
-      if(version == null){
-        version = "1.2.1";
-      }
-      if(check == null){
-        localStorage.setItem("check", "1");
       }
 
       //Speichert Einstellungen
@@ -82,7 +144,7 @@
 
         //Check values
 
-        if(delay == document.getElementById("delayS").value&&codeArea == document.getElementById("codeAreaS").value&&check == document.getElementById("versionUpdateS").value){
+        if(delay == document.getElementById("delayS").value&&codeArea == document.getElementById("codeAreaS").value){
           //Keine Änderungen -> Es muss nichts gespeichert werden
           return;
         }
@@ -116,11 +178,8 @@
 
                   delay = document.getElementById("delayS").value;
                   codeArea = document.getElementById("codeAreaS").value;
-                  check = document.getElementById("versionUpdateS").value;
 
                   localStorage.setItem("delay", document.getElementById("delayS").value);
-                  localStorage.setItem("codeArea", document.getElementById("codeAreaS").value);
-                  localStorage.setItem("check", document.getElementById("versionUpdateS").value);
 
                   location.reload();
                 }
@@ -146,11 +205,9 @@
 
               delay = document.getElementById("delayS").value;
               codeArea = document.getElementById("codeAreaS").value;
-              check = document.getElementById("versionUpdateS").value;
 
               localStorage.setItem("delay", document.getElementById("delayS").value);
               localStorage.setItem("codeArea", document.getElementById("codeAreaS").value);
-              localStorage.setItem("check", document.getElementById("versionUpdateS").value);
 
               location.reload();
             }
@@ -211,7 +268,7 @@
             });
         });
       }
-      function saveA() {
+      function saveA(actionAfterwards) {
         if(state != "stop"){
           return;
         }
@@ -226,8 +283,19 @@
               if(err){
                   alert("An error ocurred creating the file "+ err.message)
               }
-
-              alert("The file has been succesfully saved");
+              else {
+                alert("The file has been succesfully saved");
+              }
+              switch (actionAfterwards) {
+                case "":
+                  //I have to do nothing :))
+                  break;
+                case "close":
+                  closeWindow();
+                  break;
+                default:
+                  window.location = nextSite + ".html";
+              }
           });
 
         }
@@ -241,8 +309,18 @@
               { name: 'Text File (*.txt)', extensions: ['txt'] }
             ]
           }, (fileName) => {
-              if (fileName === undefined){
+              if (fileName == ""){
                   console.log("You didn't save the file");
+                  switch (actionAfterwards) {
+                    case "":
+                      //I have to do nothing :))
+                      break;
+                    case "close":
+                      closeWindow();
+                      break;
+                    default:
+                      window.location = nextSite + ".html";
+                  }
                   return;
               }
 
@@ -251,10 +329,23 @@
               // fileName is a string that contains the path and filename created in the save file dialog.
               fs.writeFile(fileName, content, (err) => {
                   if(err){
-                      alert("An error ocurred creating the file "+ err.message)
+                    alert("An error ocurred creating the file "+ err.message);
                   }
-
-                  alert("The file has been succesfully saved");
+                  else
+                  {
+                    alert("The file has been succesfully saved");
+                    originalCode = content;
+                  }
+                  switch (actionAfterwards) {
+                    case "":
+                      //I have to do nothing :))
+                      break;
+                    case "close":
+                      closeWindow();
+                      break;
+                    default:
+                      window.location = nextSite + ".html";
+                  }
               });
           });
 
@@ -277,7 +368,7 @@
             { name: 'Text File (*.txt)', extensions: ['txt'] }
           ]
         }, (fileName) => {
-            if (fileName === undefined){
+            if (fileName === ""){
                 console.log("You didn't save the file");
                 return;
             }
@@ -289,8 +380,11 @@
                 if(err){
                     alert("An error ocurred creating the file "+ err.message)
                 }
-
-                alert("The file has been succesfully saved");
+                else
+                {
+                    alert("The file has been succesfully saved");
+                    originalCode = content;
+                }
             });
         });
 
@@ -310,7 +404,7 @@
           ]
           },(fileNames) => {
             // fileNames is an array that contains all the selected
-            if(fileNames === undefined){
+            if(fileNames == ""){
                 console.log("No file selected");
                 return;
             }
@@ -327,8 +421,53 @@
 
                 // Change how to handle the file content
                 document.getElementById("code").value = data;
+                originalCode = data;
             });
         });
+      }
+
+      function checkIfCodeSaved(nextSite) {
+        if(originalCode == document.getElementById('code').value)
+        {
+          if(nextSite == "close")
+          {
+            closeWindow();
+          }
+          else {
+            window.location = nextSite + ".html";
+          }
+        }
+        else
+        {
+          dialog.showMessageBox({
+            type: "warning",
+            buttons: ["Yup", "I want to save it now", "Withdraw the action"],
+            title: "Save code",
+            message: "Changing the site or closing the window will delete your changes. Proceed?",
+            noLink: true,
+            cancelId: 2
+          }, (response) => {
+            switch (response) {
+              case 1:
+                 saveA(nextSite);
+                 break;
+              case 0:
+                if(nextSite == "close")
+                {
+                  closeWindow();
+                }
+                else {
+                  window.location = nextSite + ".html";
+                }
+                break;
+              case 2:
+                //Es soll nichts passieren :O
+                break;
+              default:
+                console.error("System hacked :O");
+            }
+          });
+        }
       }
 
       //Tastaturbefehle
@@ -344,7 +483,7 @@
 
     <!--Virtual machine-->
 
-    <div id="machine" style="display: none;">
+    <div id="machine" style="display: none; max-height: 94vh;">
 
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
@@ -368,17 +507,17 @@
               </a>
 
               <div class="navbar-dropdown">
-                <a class="navbar-item" href="index.html">
+                <a class="navbar-item" onclick="checkIfCodeSaved('index')">
                   8-bit; natural numbers
                 </a>
-                <a class="navbar-item" href="integer8.html">
+                <a class="navbar-item" onclick="checkIfCodeSaved('integer8')">
                   8-bit; integers
                 </a>
                 <hr class="navbar-divider">
                 <a class="navbar-item is-active">
                   16-bit; natural numbers
                 </a>
-                <a class="navbar-item" href="integer16.html">
+                <a class="navbar-item" onclick="checkIfCodeSaved('integer16')">
                   16-bit; integers
                 </a>
               </div>
@@ -433,29 +572,29 @@
         </div>
       </nav>
 
-      <div style="height: 94vh; width: 100vw;">
+      <div style="height: 88vh; width: 100vw;">
         <div class="columns">
 
-          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;" id="codeArea1">
+          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 82vh; border: 0.5vh solid #AB50C345; border-radius: 10px;" id="codeArea1">
             <div class="title is-4" style="font-weight: bold;">
               Code to execute<div style="float: right;"><span class="tag is-warning">16-bit; &#8469;</span></div><br><br>
               <div>
-                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAs()">Save as</button>
+                <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openA()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveA('')">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAs()">Save as</button>
               </div>
             </div>
             <div class="control">
-              <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 69vh;"></textarea>
+              <textarea id="code" class="textarea has-fixed-size codearea" wrap="off" style="border: none !important; height: 60vh;"></textarea>
             </div>
           </div>
 
-          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px; display: none;" id="codeArea0">
+          <div class="column is-3" style="margin-top: 2vh; margin-left: 2vw; height: 82vh; border: 0.5vh solid #AB50C345; border-radius: 10px; display: none;" id="codeArea0">
             <div class="title is-4" style="font-weight: bold;">
               Code to execute<div style="float: right;"><span class="tag is-warning">16-bit; &#8469;</span></div><br><br>
               <div>
                 <button class="button" name="button" style="margin: 10px 2px 2px 2px;" onclick="runCode();">Run</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="openAT()">Open</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAT()">Save</button><button style="margin: 10px 2px 2px 2px;" class="button" name="button" onclick="saveAsT()">Save as</button>
               </div>
             </div>
-            <div class="control" style="height: 69vh; overflow: auto;">
+            <div class="control" style="height: 63vh; overflow: auto;">
               <table class="table is-striped" style="width: 100%;">
                 <tbody id="codeTable">
                   <tr id="area1">
@@ -467,7 +606,7 @@
             </div>
           </div>
 
-          <div class="column is-8" style="margin-top: 2vh; margin-left: 2vw; height: 90vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
+          <div class="column is-8" style="margin-top: 2vh; margin-left: 2vw; height: 82vh; border: 0.5vh solid #AB50C345; border-radius: 10px;">
             <div class="title is-4" style="font-weight: bold;">
               Register <button class="button" name="button" style="float: right;" onclick="resetR()">Reset Register</button>
             </div>
@@ -549,7 +688,7 @@
             </div>
 
             <div class="control">
-              <textarea class="textarea has-fixed-size" style="width: 100%; height: 35vh;" id="log" readonly></textarea>
+              <textarea class="textarea has-fixed-size" style="width: 100%; height: 26vh;" id="log" readonly></textarea>
             </div>
 
           </div>
@@ -842,7 +981,7 @@
         <div class="modal-content">
           <div class="box">
 
-          <h1 class="title is-2" id="settingTitle">Settings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version: </h1>
+          <h1 class="title is-2">Settings</h1>
           <form class="" action="javascript:saveS();">
 
             <div class="field">
@@ -865,18 +1004,6 @@
                   <select id="codeAreaS">
                     <option value="1">one-area-mode(default)</option>
                     <option value="0">table-mode</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="field">
-              <label class="label">Check for version update</label>
-              <div class="control">
-                <div class="select">
-                  <select id="versionUpdateS">
-                    <option value="1">true(default)</option>
-                    <option value="0">off</option>
                   </select>
                 </div>
               </div>
@@ -993,10 +1120,6 @@
       if(codeArea != "1"){
         document.getElementById("codeAreaS").value = codeArea;
       }
-      if(check != "1"){
-        document.getElementById("versionUpdateS").value = check;
-      }
-
       //Delay Zeit in Millisekunden
 
       var delayT = 1000;
@@ -1021,8 +1144,6 @@
           removeRow();
         }
       });
-
-      document.getElementById("settingTitle").innerHTML = document.getElementById("settingTitle").innerHTML + version;
 
     </script>
 
