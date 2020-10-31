@@ -24,4 +24,6 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 Version updates from server and a warning before leaving application, when the code in the code area wasn't saved. :open_mouth:
 
+Project closed. Maybe there will be an update in some kind in the future, but there's no plan right now.
+
 **Author: Albert Traut**
