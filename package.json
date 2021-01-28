@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/AlTrAugsburg/virtual-machine-Assembler#readme",
   "devDependencies": {
-    "electron": "^4.0.1"
+    "electron": "^9.4.0"
   },
   "dependencies": {
     "electron-packager": "^13.0.1"
