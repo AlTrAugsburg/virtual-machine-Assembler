@@ -133,6 +133,7 @@ function runCode(){
       SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab
       MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab
       DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab
+      IF x THEN y -- Wenn der Wert im Akkumulator x entspricht, springt die Maschine zur Zeile y
       JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt
       JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen
       JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen
@@ -174,7 +175,12 @@ function runCode(){
       //Schauen ob Syntaxfehler vorhanden (d.h. mehr/weniger als Operation und Ziel, außer bei END)
       if(befehl.length!=2&&befehl[0]!="END"){
 
-        document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+        //Ausnahme IF x THEN y implementieren
+        if(!befehl.length==4||!befehl[0]=="IF"){
+          document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+        }
 
         return;
 
@@ -854,6 +860,87 @@ function runCode(){
           document.getElementById("bzd").innerHTML = bzo;
 
           break;
+
+          case "IF":
+            //Schauen, ob THEN geschrieben wurde bzw. richtig geschrieben wurde
+            if(befehl[2]!="THEN"){
+              document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+            }
+            //Befehl überprüft, ob der folgende Wert dem im Akkumulator entspricht und springt falls true
+            //der Zeile die dem Wert nach y entspricht
+            if(isNaN(befehl[1])||isNaN(befehl[3])){
+              //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            if(parseInt(befehl[3]) < 1){
+              //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            if(!isNaturalNumber(befehl[1])){
+              //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            document.getElementById("log").value = "Command " + (bz+1) + ": IF " + befehl[1] + " THEN " + befehl[3] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+            if(document.getElementById("r0").innerHTML == document.getElementById("r"+befehl[1]).innerHTML){
+              bz = parseInt(befehl[3])-1;
+              bzo = bz + 1;
+              document.getElementById("bz").innerHTML = ("00000000"+Number(bzo).toString(2)).substr(-8);
+              document.getElementById("bzd").innerHTML = bzo;
+
+            }
+
+            else {
+
+              bz = bz + 1;
+              bzo = bz + 1;
+              document.getElementById("bz").innerHTML = ("00000000"+Number(bzo).toString(2)).substr(-8);
+              document.getElementById("bzd").innerHTML = bzo;
+
+            }
+
+            if(srActive){
+
+              if(r0==0){
+
+                document.getElementById("sr").innerHTML = "10000001";
+
+                srActive = true;
+
+              }
+
+              else {
+
+                document.getElementById("sr").innerHTML = "00000000";
+
+                srActive = false;
+
+              }
+
+
+            }
+            break;
 
         case "JUMP":
           //Operation lautet zum n-ten Befehl zu springen -> Befehlszähler auf n setzen
