@@ -174,16 +174,12 @@ function runCode(){
 
       //Schauen ob Syntaxfehler vorhanden (d.h. mehr/weniger als Operation und Ziel, außer bei END)
       if(befehl.length!=2&&befehl[0]!="END"){
-
         //Ausnahme IF x THEN y implementieren
         if(!befehl.length==4||!befehl[0]=="IF"){
+          //Irgendwas falsches wurde eingetragen -> Syntaxfehler
           document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
-
           return;
         }
-
-        return;
-
       }
 
       //Operation auslesen
@@ -865,6 +861,7 @@ function runCode(){
             //Schauen, ob THEN geschrieben wurde bzw. richtig geschrieben wurde
             if(befehl[2]!="THEN"){
               document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+              return;
             }
             //Befehl überprüft, ob der folgende Wert dem im Akkumulator entspricht und springt falls true
             //der Zeile die dem Wert nach y entspricht
