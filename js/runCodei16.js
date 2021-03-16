@@ -1,9 +1,9 @@
 /*
 
-  Dieser Code ist für die Virtuale Maschine mit 8-bit geschrieben. Sie akzeptiert nur ganeze Zahlen zwischen -32768
-  und 32767 und kann auch nur mit diesen rechnen.
+  Dieser Code ist für die Virtuale Maschine mit 16-bit geschrieben. Sie akzeptiert nur natürliche Zahlen zwischen 0 und 65535
+  und kann auch nur mit diesen rechnen.
 
-  Wird auf der Seite integer8.html benutzt. Sollte ab der Version 1.0.1 stabil sein.
+  Wird auf der Seite index.html benutzt. Sollte ab der Version 1.1.0 stabil sein.
 
 */
 
@@ -104,7 +104,7 @@ function runCode(){
     document.getElementById("bzd").innerHTML = bzo;
 
     //Startet die Funktion, welche die Funktion ausführt in 1 Sekunde, damit "Notfalls" der Code gestoppt bzw. pausiert werden kann
-    ex = setTimeout(execute, 1000);
+    ex = setTimeout(execute, delayT);
 
   }
 
@@ -133,6 +133,7 @@ function runCode(){
       SUB x   -- Subtrahiert den Wert in Rx (außer R0) vom Wert in R0 und legt das Ergebnis in R0 ab
       MULT x  -- Multipliziert den Wert in Rx (außer R0) mit dem Wert in R0 und legt das Ergebnis in R0 ab
       DIV x   -- Dividiert den Wert in R0 durch den Wert in Rx (außer R0) und legt das Ergebnis in R0 ab
+      IF x THEN y -- Wenn der Wert im Akkumulator x entspricht, springt die Maschine zur Zeile y
       JUMP n  -- Unbedingeter Sprung zum n-ten Befehl, d.h. der n-te Befehl wird danach ausgeführt
       JGE n   -- Falls der Wert in R0 größer oder gleich null ist (Greater or Equal) wird zum n-ten Befehl gesprungen
       JGT n   -- Falls der Wert in R0 größer als null ist (Greater Than) wird zum n-ten Befehl gesprungen
@@ -151,13 +152,12 @@ function runCode(){
 
       Das Statusregister SR beschreibt den Status des letzten Ergebnisses eines Befehls:
 
-      - 00000000 steht für eine psoitve Zahl zwischen 1 und 32767
-      - 10000000 steht für eine Zahl größer als 32767 (Overflow)
-      - 00000011 steht für eine Zahl kleiner -32768 (Overflow)
+      - 00000000 steht für eine psoitve Zahl zwischen 1 und 65535
+      - 10000000 steht für eine Zahl größer als 65535 (Overflow)
       - 00000001 steht für eine negative Zahl
       - 10000001 steht für den Wert 0
 
-      Sollte in R0 eine negative Zahl bzw. eine Zahl größer 255 gespeichert werden, wird es entsprechend im Statusregister vermerkt
+      Sollte in R0 eine negative Zahl bzw. eine Zahl größer 65535 gespeichert werden, wird es entsprechend im Statusregister vermerkt
       und R0 wird der Wert 0 zugewiesen.
 
       Das Statusregister wird zu Beginn des nächsten Befehls zurückgesetzt, außer bei einem JUMP-Befehl jeglicher Art. Dort wird er
@@ -175,7 +175,12 @@ function runCode(){
       //Schauen ob Syntaxfehler vorhanden (d.h. mehr/weniger als Operation und Ziel, außer bei END)
       if(befehl.length!=2&&befehl[0]!="END"){
 
-        document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+        //Ausnahme IF x THEN y implementieren
+        if(!befehl.length==4||!befehl[0]=="IF"){
+          document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+
+          return;
+        }
 
         return;
 
@@ -215,17 +220,6 @@ function runCode(){
 
             }
 
-            //Schauen ob r0 < 0
-            if(r0 < 0){
-
-              //Im SR vermerken
-
-              document.getElementById("sr").innerHTML = "00000001";
-
-              srActive = true;
-
-            }
-
             //Logeintrag
 
             document.getElementById("log").value = "Command " + (bz+1) + ": LOAD " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
@@ -253,7 +247,7 @@ function runCode(){
           break;
 
         case "DLOAD":
-          //Operation lautet Wert i in R0 zu laden, wobei i nicht größer als 32767 bzw. kleiner als -32768 sein darf
+          //Operation lautet Wert i in R0 zu laden, wobei i nicht größer als 255 sein darf
 
           if(srActive){
             //Statusregister zurücksetzten
@@ -275,7 +269,7 @@ function runCode(){
 
           }
 
-          if(!Number.isInteger(parseInt(befehl[1]))){
+          if(!isNaturalNumber(befehl[1])){
             //Der Wert in i ist keine natürliche Zahl
 
             document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Only natural numbers are supported. Code execution ended.\n" + document.getElementById("log").value;
@@ -286,10 +280,10 @@ function runCode(){
 
           }
 
-          if(parseInt(befehl[1]) > 32767){
-            //Der Wert von i ist größer als 32767 -> Overflow -> in SR eintragen
+          if(parseInt(befehl[1]) > 65535){
+            //Der Wert von i ist größer als 65535 -> Overflow -> in SR eintragen
 
-            document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
+            document.getElementById("log").value = "Overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
             //Im Statusregister vermerken
 
@@ -297,7 +291,7 @@ function runCode(){
 
             srActive = true;
 
-            //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
+            //Da es sich um eine Zahl größer 65535 handelt wird r0 auf 0 zurückgesetzt
 
             document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
@@ -308,16 +302,16 @@ function runCode(){
 
           else {
 
-            if(parseInt(befehl[1]) < -32768){
-              //Der Wert von i ist kleiner -32768 -> in SR eintragen
+            if(parseInt(befehl[1]) < 0){
+              //Der Wert von i ist kleiner 0 -> in SR eintragen
 
-              var sr = document.getElementById("sr").innerHTML = "00000011";
+              var sr = document.getElementById("sr").innerHTML = "00000001";
 
               srActive = true;
 
-              document.getElementById("log").value = "Negative overflow in line " + (bz+1) + ".\n" + document.getElementById("log").value;
+              document.getElementById("log").value = "Negative number in line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
-              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
+              //Da es sich um eine Zahl kleiner 0 handelt wird r0 auf 0 zurückgesetzt
 
               document.getElementById("r0").innerHTML = "00000000 00000000";
               document.getElementById("r0d").innerHTML = "0";
@@ -328,45 +322,22 @@ function runCode(){
 
             else {
 
-              if(parseInt(befehl[1]) < 0){
+              if(parseInt(befehl[1]) == 0){
 
-                //Da Zahl kleiner 0, negative Flag und spezielle Eintragung
+                //Da Zahl gleich 0 ist, im Statusregister vermerken
 
-                document.getElementById("sr").innerHTML = "00000001";
+                document.getElementById("sr").innerHTML = "10000001";
 
                 srActive = true;
 
-                r0 = parseInt(befehl[1]);
-
-                var r0p = 32768 + r0;
-
-                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
-                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-                document.getElementById("r0d").innerHTML = r0;
-
               }
 
-              else {
+              r0 = parseInt(befehl[1]);
 
-                if(parseInt(befehl[1]) == 0){
+              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
-                  //Da Zahl gleich 0 ist, im Statusregister vermerken
-
-                  document.getElementById("sr").innerHTML = "10000001";
-
-                  srActive = true;
-
-                }
-
-                r0 = parseInt(befehl[1]);
-
-                var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
-                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-                document.getElementById("r0d").innerHTML = r0;
-
-              }
+              document.getElementById("r0d").innerHTML = r0;
 
             }
 
@@ -395,31 +366,17 @@ function runCode(){
             //bzw. um den Status zu setzten, sollte der Wert durch einen Overflow oder eine negative Zahl entstehen
             if(r0 == 0){
 
-              document.getElementById("sr").innerHTML = "10000001";
-
-              srActive = true;
-
-            }
-
-            //Statusregister zurücksetzen, wenn nicht kleiner null
-
-            else {
-
-              if(r0<0){
-
-                document.getElementById("sr").innerHTML = "00000001";
+                document.getElementById("sr").innerHTML = "10000001";
 
                 srActive = true;
 
-              }
+            }
+            //Statusregister zurücksetzen
+            else {
 
-              else {
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
 
@@ -469,7 +426,8 @@ function runCode(){
 
           }
 
-          document.getElementById("r"+befehl[1]).innerHTML = document.getElementById("r0").innerHTML;
+          var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+          document.getElementById("r"+befehl[1]).innerHTML = splice(t, 8, 0, " ");
 
           document.getElementById("r"+befehl[1]+"d").innerHTML = r0;
 
@@ -542,10 +500,10 @@ function runCode(){
 
           r0 = r0 + parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML);
 
-          if(r0 > 32767){
-            //Wert in R0 ist größer 32767 -> Overflow -> in SR eintragen
+          if(r0 > 65535){
+            //Wert in R0 ist größer 65535 -> Overflow -> in SR eintragen
 
-            document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
+            document.getElementById("log").value = "Overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
             //Im Statusregister vermerken
 
@@ -553,7 +511,7 @@ function runCode(){
 
             srActive = true;
 
-            //Da es sich um eine Zahl größer 127 handelt wird r0 auf 0 zurückgesetzt
+            //Da es sich um eine Zahl größer 65535 handelt wird r0 auf 0 zurückgesetzt
 
             document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
@@ -564,66 +522,20 @@ function runCode(){
 
           else {
 
-            if(r0 < 0){
+            if(r0 == 0){
 
-              if(r0 < -32768){
+              //Im SR vermerken
 
-                //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
+              document.getElementById("sr").innerHTML = "10000001";
 
-                document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
-
-                //Im Statusregister vermerken
-
-                document.getElementById("sr").innerHTML = "00000011";
-
-                srActive = true;
-
-                //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
-
-                document.getElementById("r0").innerHTML = "00000000 00000000";
-                document.getElementById("r0d").innerHTML = "0";
-
-                r0 = 0;
-
-              }
-
-              else {
-
-                //Im SR vermerken
-
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-                var r0p = 32768 + r0;
-
-                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
-                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-                document.getElementById("r0d").innerHTML = r0;
-
-              }
+              srActive = true;
 
             }
 
-            else {
+            var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+            document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
-              if(r0 == 0){
-
-                //Im SR vermerken
-
-                document.getElementById("sr").innerHTML = "10000001";
-
-                srActive = true;
-
-              }
-
-              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
-              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-              document.getElementById("r0d").innerHTML = r0;
-
-            }
+            document.getElementById("r0d").innerHTML = r0;
 
           }
 
@@ -698,88 +610,41 @@ function runCode(){
           r0 = r0 - parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML);
 
           if(r0 < 0){
+            //Wert in R0 ist kleiner 0 -> in SR eintragen
 
-            if(r0 < -32768){
+            document.getElementById("log").value = "In line " + (bz+1) + " you get a negative number.\n" + document.getElementById("log").value;
 
-              //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
+            //Im Statusregister vermerken
 
-              document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
+            document.getElementById("sr").innerHTML = "00000001";
 
-              //Im Statusregister vermerken
+            srActive = true;
 
-              document.getElementById("sr").innerHTML = "00000011";
+            //Da es sich um eine Zahl kleiner 0 handelt wird r0 auf 0 zurückgesetzt
 
-              srActive = true;
+            document.getElementById("r0").innerHTML = "00000000 00000000";
+            document.getElementById("r0d").innerHTML = "0";
 
-              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
-
-              document.getElementById("r0").innerHTML = "00000000 00000000";
-              document.getElementById("r0d").innerHTML = "0";
-
-              r0 = 0;
-
-            }
-
-            else {
-
-              //Im SR vermerken
-
-              document.getElementById("sr").innerHTML = "00000001";
-
-              srActive = true;
-
-              var r0p = 32768 + r0;
-
-              var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
-              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-              document.getElementById("r0d").innerHTML = r0;
-
-            }
+            r0 = 0;
 
           }
 
           else {
 
-            if(r0 > 32767){
-              //Wert in R0 ist größer 32767 -> Overflow -> in SR eintragen
-
-              document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
+            if(r0 == 0){
 
               //Im Statusregister vermerken
 
-              document.getElementById("sr").innerHTML = "10000000";
+              document.getElementById("sr").innerHTML = "10000001";
 
               srActive = true;
 
-              //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
-
-              document.getElementById("r0").innerHTML = "00000000 00000000";
-              document.getElementById("r0d").innerHTML = "0";
-
-              r0  = 0;
-
             }
 
-            else {
+            var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+            document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
-              if(r0 == 0){
-
-                //Im Statusregister vermerken
-
-                document.getElementById("sr").innerHTML = "10000001";
-
-                srActive = true;
-
-              }
-
-              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
-              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-              document.getElementById("r0d").innerHTML = r0;
-
-
-            }
+            document.getElementById("r0d").innerHTML = r0;
 
           }
 
@@ -851,88 +716,40 @@ function runCode(){
 
           r0 = r0 * parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML);
 
-          if(r0 > 32767){
-            //Wert in R0 ist größer 32767 -> Overflow -> in SR vermerken
+          if(r0 > 65535){
+            //Wert in R0 ist größer 65535 -> Overflow -> in SR vermerken
 
-            document.getElementById("log").value = "Positive overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
-
-            //Im Statusregister vermerken
+            document.getElementById("log").value = "Overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
 
             document.getElementById("sr").innerHTML = "10000000";
 
             srActive = true;
 
-            //Da es sich um eine Zahl größer 32767 handelt wird r0 auf 0 zurückgesetzt
+            //Da es sich um eine Zahl größer 65535 handelt wird r0 auf 0 zurückgesetzt
 
             document.getElementById("r0").innerHTML = "00000000 00000000";
             document.getElementById("r0d").innerHTML = "0";
 
-            r0  = 0;
+            r0 = 0;
 
           }
 
           else {
 
-            if(r0 < 0){
+            if(r0 == 0){
 
-              if(r0 < -32768){
+              //Im SR vermerken
 
-                //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
+              document.getElementById("sr").innerHTML = "10000001";
 
-                document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
-
-                //Im Statusregister vermerken
-
-                document.getElementById("sr").innerHTML = "00000011";
-
-                srActive = true;
-
-                //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
-
-                document.getElementById("r0").innerHTML = "00000000 00000000";
-                document.getElementById("r0d").innerHTML = "0";
-
-                r0 = 0;
-
-              }
-
-              else {
-
-                //Im SR vermerken
-
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-                var r0p = 32768 + r0;
-
-                var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
-                document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-                document.getElementById("r0d").innerHTML = r0;
-
-              }
+              srActive = true;
 
             }
 
-            else {
+            var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+            document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
-              if(r0 == 0){
-
-                //Im SR vermerken
-
-                document.getElementById("sr").innerHTML = "10000001";
-
-                srActive = true;
-
-              }
-
-              var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
-              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-              document.getElementById("r0d").innerHTML = r0;
-
-            }
+            document.getElementById("r0d").innerHTML = r0;
 
           }
 
@@ -993,7 +810,7 @@ function runCode(){
 
           }
 
-          if(document.getElementById("r" + befehl[1]).innerHTML == "00000000"){
+          if(document.getElementById("r" + befehl[1]).innerHTML == "00000000 00000000"){
             //Wert in Rx ist gleich 0 -> Durch 0 kann nicht geteilt werden -> Error
 
             document.getElementById("log").value = "Math Error at line " + (bz+1) + ". You can't divide a number by 0. Code execution ended.\n" + document.getElementById("log").value;
@@ -1017,66 +834,20 @@ function runCode(){
 
           r0 = Math.floor(r0/parseInt(document.getElementById("r"+befehl[1]+"d").innerHTML));
 
-          if(r0 < 0){
+          if(r0 == 0){
 
-            if(r0 < -32768){
+            //Im SR vermerken
 
-              //Wert in R0 ist kleiner -32768 -> Overflow -> in SR eintragen
+            document.getElementById("sr").innerHTML = "10000001";
 
-              document.getElementById("log").value = "Negative overflow at line " + (bz+1) + ".\n" + document.getElementById("log").value;
-
-              //Im Statusregister vermerken
-
-              document.getElementById("sr").innerHTML = "00000011";
-
-              srActive = true;
-
-              //Da es sich um eine Zahl kleiner -32768 handelt wird r0 auf 0 zurückgesetzt
-
-              document.getElementById("r0").innerHTML = "00000000 00000000";
-              document.getElementById("r0d").innerHTML = "0";
-
-              r0 = 0;
-
-            }
-
-            else {
-
-              //Im SR vermerken
-
-              document.getElementById("sr").innerHTML = "00000001";
-
-              srActive = true;
-
-              var r0p = 32768 + r0;
-
-              var t = "1"+("000000000000000"+Number(r0p).toString(2)).substr(-15);
-              document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-              document.getElementById("r0d").innerHTML = r0;
-
-            }
+            srActive = true;
 
           }
 
-          else {
+          var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
+          document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
 
-            if(r0 == 0){
-
-              //Im SR vermerken
-
-              document.getElementById("sr").innerHTML = "10000001";
-
-              srActive = true;
-
-            }
-
-            var t = ("0000000000000000"+Number(r0).toString(2)).substr(-16);
-            document.getElementById("r0").innerHTML = splice(t, 8, 0, " ");
-
-            document.getElementById("r0d").innerHTML = r0;
-
-          }
+          document.getElementById("r0d").innerHTML = r0;
 
           document.getElementById("log").value = "Command " + (bz+1) + ": DIV " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
@@ -1089,6 +860,99 @@ function runCode(){
           document.getElementById("bzd").innerHTML = bzo;
 
           break;
+
+          case "IF":
+            //Schauen, ob THEN geschrieben wurde bzw. richtig geschrieben wurde
+            if(befehl[2]!="THEN"){
+              document.getElementById("log").value = "Syntax Error in line " + (bz+1) + ". Code execution ended.\n" + document.getElementById("log").value;
+            }
+            //Befehl überprüft, ob der folgende Wert dem im Akkumulator entspricht und springt falls true
+            //der Zeile die dem Wert nach y entspricht
+            if(isNaN(befehl[1])||isNaN(befehl[3])){
+              //Der Wert von x ist keine Zahl -> Syntaxfehler
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no number to load. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            if(parseInt(befehl[3]) < 1){
+              //Der Wert von x ist kleiner 1 -> Der Code beginnt in Linie 1
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". There is no line 0 and there are no negative line numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            if(!isNaturalNumber(befehl[1])){
+              //Der Wert von x ist keine natürliche Zahl -> Syntaxfehler
+
+              document.getElementById("log").value = "Syntaxerror in line " + (bz+1) + ". Lines only have natural numbers. Code execution ended.\n" + document.getElementById("log").value;
+
+              state = "stop";
+
+              return;
+
+            }
+
+            document.getElementById("log").value = "Command " + (bz+1) + ": IF " + befehl[1] + " THEN " + befehl[3] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
+
+            if(document.getElementById("r0").innerHTML == document.getElementById("r"+befehl[1]).innerHTML){
+              bz = parseInt(befehl[3])-1;
+              bzo = bz + 1;
+              document.getElementById("bz").innerHTML = ("00000000"+Number(bzo).toString(2)).substr(-8);
+              document.getElementById("bzd").innerHTML = bzo;
+
+            }
+
+            else {
+
+              bz = bz + 1;
+              bzo = bz + 1;
+              document.getElementById("bz").innerHTML = ("00000000"+Number(bzo).toString(2)).substr(-8);
+              document.getElementById("bzd").innerHTML = bzo;
+
+            }
+
+            //SR unwichtig, wird zurückgesetzt
+            if(srActive){
+
+              if(r0==0){
+
+                document.getElementById("sr").innerHTML = "10000001";
+
+                srActive = true;
+
+              }
+
+              else {
+
+                if(r0 < 0){
+
+                  document.getElementById("sr").innerHTML = "00000001";
+
+                  srActive = true;
+
+                }
+
+                else {
+
+                  document.getElementById("sr").innerHTML = "00000000";
+
+                  srActive = false;
+
+                }
+
+              }
+
+            }
+            break;
 
         case "JUMP":
           //Operation lautet zum n-ten Befehl zu springen -> Befehlszähler auf n setzen
@@ -1123,7 +987,6 @@ function runCode(){
               }
 
             }
-
 
           }
 
@@ -1207,7 +1070,7 @@ function runCode(){
 
           document.getElementById("log").value = "Command " + (bz+1) + ": JGE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
-          if(document.getElementById("sr").innerHTML != "00000001" || document.getElementById("sr").innerHTML != "00000011"){
+          if(document.getElementById("sr").innerHTML != "00000001"){
 
             bz = parseInt(befehl[1])-1;
             bzo = bz + 1;
@@ -1237,23 +1100,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1327,23 +1179,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1387,7 +1228,7 @@ function runCode(){
 
           document.getElementById("log").value = "Command " + (bz+1) + ": JLE " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
-          if(document.getElementById("sr").innerHTML == "10000001" || document.getElementById("sr").innerHTML == "00000001" || document.getElementById("sr").innerHTML == "00000011"){
+          if(document.getElementById("sr").innerHTML == "10000001" || document.getElementById("sr").innerHTML == "00000001"){
 
             bz = parseInt(befehl[1])-1;
             bzo = bz + 1;
@@ -1417,23 +1258,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1477,7 +1307,7 @@ function runCode(){
 
           document.getElementById("log").value = "Command " + (bz+1) + ": JLT " + befehl[1] + ";\nR0 = " + r0 + ";\n" + document.getElementById("log").value;
 
-          if(document.getElementById("sr").innerHTML == "00000001" || document.getElementById("sr").innerHTML == "00000011"){
+          if(document.getElementById("sr").innerHTML == "00000001"){
 
             bz = parseInt(befehl[1])-1;
             bzo = bz + 1;
@@ -1507,23 +1337,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1597,23 +1416,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1687,23 +1495,12 @@ function runCode(){
 
             else {
 
-              if(r0 < 0){
+              document.getElementById("sr").innerHTML = "00000000";
 
-                document.getElementById("sr").innerHTML = "00000001";
-
-                srActive = true;
-
-              }
-
-              else {
-
-                document.getElementById("sr").innerHTML = "00000000";
-
-                srActive = false;
-
-              }
+              srActive = false;
 
             }
+
 
           }
 
@@ -1743,7 +1540,7 @@ function runCode(){
 
       }
 
-      ex = setTimeout(execute, 1000);
+      ex = setTimeout(execute, delayT);
 
     }
 
@@ -1797,7 +1594,7 @@ function runCode(){
 
         document.getElementById("pause").innerHTML = "Pause";
 
-        ex = setTimeout(execute, 1000);
+        ex = setTimeout(execute, delayT);
 
         document.getElementById("log").value = "Code execution continues.\n" + document.getElementById("log").value;
 
