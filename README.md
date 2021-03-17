@@ -21,9 +21,14 @@ A virtual machine to learn the programming language Assembler. Written with [Ele
 
 * The issues #1 to #4 should make no problem in this version
 
+## Added features in Version 1.2.2
+
+* Added functions ISTORE, ILOAD, READ and WRITE
+* Updated version update system (not 100% done)
+
 ## What's coming next?
 
-Version updates from server and a warning before leaving application, when the code in the code area wasn't saved. :open_mouth:
+Update server version updates. :open_mouth:
 
 Project closed. Maybe there will be an update in some kind in the future, but there's no plan right now.
 
