@@ -1,5 +1,6 @@
 var app = require('electron').remote;
 var dialog = app.dialog;
+var schreibenendeDateien = 0;
 
 var check = localStorage.getItem("check");
 if(check == "0"){
@@ -7,7 +8,7 @@ if(check == "0"){
 }
 var version = localStorage.getItem("version");
 if(version == null){
-  version = "1.2.1";
+  version = "1.2.2";
 }
 
 if(!navigator.onLine){
@@ -29,10 +30,19 @@ else{
   request.open("GET","http://ladon.xyz/vma/version?action=getVersion");
   request.addEventListener('load', function(event) {
     if (request.status >= 200 && request.status < 300) {
-      if(version==request.responseText){
+      if(request.responseText==version){
         app.getCurrentWindow().close();
       }
       document.getElementById("title").innerHTML = "Updating Application...";
+      dialog.showMessageBox({
+        type: "warning",
+        buttons: ["Ok"],
+        title: request.statusText,
+        message: " wasn't possible to get update data from server. Case: "+request.responseText,
+        noLink: true
+      }, (response) => {
+        app.getCurrentWindow().close();
+      });
       var data1 = new FormData();
       data1.append('action', 'update');
       var request1 = new XMLHttpRequest();
@@ -40,65 +50,26 @@ else{
       request1.addEventListener('load', function(event) {
         if (request.status >= 200 && request.status < 300) {
           var updateData = request1.responseText.split("#@#");
+          for (var i = 0; i < updateData.length; i++) {
+            updateData[i] = updateData.split("#@splitter@#");
+          }
           const fs = require('fs');
 
-          //Update runCode.js
-          fs.writeFile('js/runCode.js', updateData[0], (err) => {
-              // throws an error, you could also catch it here
-              if (err) throw err;
+          schreibenendeDateien = 0;
+          //Schleife die alle Elemente durch geht, die geupdatet werden sollen
+          for(var i = 0; i < updateData.length; i++)
+          {
+            schreibenendeDateien++;
+            //Update files(Erstes Dateiname, zweites Inhalt)
+            fs.writeFile(updateData[0], updateData[1], (err) => {
+                // throws an error, you could also catch it here
+                if (err) throw err;
 
-              //Update runCodei8.js
-              fs.writeFile('js/runCodei8.js', updateData[1], (err) => {
-                  // throws an error, you could also catch it here
-                  if (err) throw err;
-
-                  //Update runCoden16.js
-                  fs.writeFile('js/runCoden16.js', updateData[2], (err) => {
-                      // throws an error, you could also catch it here
-                      if (err) throw err;
-
-                      //Update runCodei16.js
-                      fs.writeFile('js/runCodei16.js', updateData[3], (err) => {
-                          // throws an error, you could also catch it here
-                          if (err) throw err;
-
-                          //Update index.html
-                          fs.writeFile('index.html', updateData[4], (err) => {
-                              // throws an error, you could also catch it here
-                              if (err) throw err;
-
-                              //Update integer8.html
-                              fs.writeFile('integer8.html', updateData[5], (err) => {
-                                  // throws an error, you could also catch it here
-                                  if (err) throw err;
-
-                                  //Update natural16.html
-                                  fs.writeFile('natural16.html', updateData[6], (err) => {
-                                      // throws an error, you could also catch it here
-                                      if (err) throw err;
-
-                                      //Update integer16.html
-                                      fs.writeFile('integer16.html', updateData[7], (err) => {
-                                          // throws an error, you could also catch it here
-                                          if (err) throw err;
-
-                                          // Update checkVersion.js
-                                          fs.writeFile('js/checkVersion.js', updateData[8], (err) => {
-                                              // throws an error, you could also catch it here
-                                              if (err) throw err;
-
-                                              // success case, all files were saved
-                                              localStorage.setItem("version", request.responseText);
-                                              app.getCurrentWindow().close();
-                                          });
-                                      });
-                                  });
-                              });
-                          });
-                      });
-                  });
-              });
-          });
+                schreibenendeDateien--;
+            });
+          }
+          checkIfReady();
+          app.getCurrentWindow().close();
         }
         else {
           dialog.showMessageBox({
@@ -127,4 +98,16 @@ else{
     }
  });
  request.send();
+}
+
+function checkIfReady()
+{
+  if(schreibenendeDateien == 0)
+  {
+    app.getCurrentWindow().close();
+  }
+  else
+  {
+    setTimeout(checkIfReady(), 500);
+  }
 }
