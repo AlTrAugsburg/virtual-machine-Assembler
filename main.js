@@ -8,7 +8,7 @@ let winV
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 1400, height: 800, icon: "assets/klein.ico", resizable: false })
+  win = new BrowserWindow({ width: 1325, height: 725, frame: false, minWidth: 1325, minHeight: 725, icon: "assets/klein.ico", webPreferences: {nodeIntegration: true} })
 
   //Remove top menu
   //win.setMenu(null);
@@ -17,7 +17,9 @@ function createWindow () {
   win.loadFile('index.html')
 
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
+
+  win.webContents.executeJavaScript('', /* userGesture */ true)
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -30,7 +32,7 @@ function createWindow () {
 
 function checkVersion (){
   //Create the version checking browser window
-  winV = new BrowserWindow({ width: 375, height: 250, frame: false, icon: "assets/klein.ico", resizable: false })
+  winV = new BrowserWindow({ width: 1425, height: 1285, frame: false, icon: "assets/klein.ico", resizable: false, webPreferences: {nodeIntegration: true} })
 
   //Remove top menu
   //win.setMenu(null);
@@ -39,7 +41,7 @@ function checkVersion (){
   winV.loadFile('checkVersion.html')
 
   // Open the DevTools.
-  //winV.webContents.openDevTools()
+  winV.webContents.openDevTools()
 
   // Emitted when the window is closed.
   winV.on('closed', () => {
